@@ -1,0 +1,47 @@
+﻿@model FeedbackSchool.Interfaces.IRepository<Guest>
+
+<link href="~/css/table.css" rel="stylesheet"/>
+<div class="panel-success">
+    <div class="panel-heading text-center">
+        <h4>Список отзывов</h4>
+    </div>
+    <div class="panel-body">
+
+        @using (Html.BeginForm("DownloadDb", "Admin"))
+        {
+            <button class="btn btn-primary" type="submit">Скачать БД</button>
+        }
+        
+        
+        <table class="container">
+            <thead>
+            <tr>
+                <th>Школа</th>
+                <th>Класс</th>
+                <th>Имя ученика</th>
+                <th>Отзыв</th>
+                <th>Любимые уроки</th>
+                <th>Время отправки</th>
+                <th>Номер отзыва</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{
+
+                foreach (var test in Model.GetAllList())
+                {
+                    <tr>
+                        <td data-label="Школа"> @test.School</td>
+                        <td data-label="Класс"> @test.Class</td>
+                        <td data-label="Имя ученика"> @test.Name</td>
+                        <td data-label="Отзыв"> @test.Feedback</td>
+                        <td data-label="Любимые уроки"> @test.FavoriteLessons</td>
+                        <td data-label="Время отправки">@test.DateTime</td>
+                        <td data-label="Номер отзыва"> @test.Id</td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
