@@ -4,13 +4,12 @@ using System.Data;
 using System.Globalization;
 using System.Threading.Tasks;
 using Dapper;
-using FeedbackSchool.Interfaces;
 using FeedbackSchool.Models;
 using Microsoft.Data.Sqlite;
 
 namespace FeedbackSchool.Data.Dapper
 {
-    public class DapperRepository : IRepository<Guest>
+    public class DapperRepository : IRepository<Guest, FeedbackModel>
     {
         public IEnumerable<Guest> GetAllList()
         {
@@ -21,7 +20,7 @@ namespace FeedbackSchool.Data.Dapper
             return db.Query<Guest>("SELECT * FROM FeedbackList", commandType: CommandType.Text);
         }
 
-        public Task Add(Guest item)
+        public Task AddFeedback(Guest item)
         {
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
@@ -41,7 +40,7 @@ namespace FeedbackSchool.Data.Dapper
             return Task.CompletedTask;
         }
 
-        public Task Delete(int id)
+        public Task DeleteFeedback(int id)
         {
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
@@ -51,7 +50,7 @@ namespace FeedbackSchool.Data.Dapper
             return Task.CompletedTask;
         }
 
-        public Task DeleteAll()
+        public Task DeleteAllFeedback()
         {
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
@@ -60,6 +59,31 @@ namespace FeedbackSchool.Data.Dapper
             db.Query<Guest>($"DELETE FROM FeedbackList WHERE 1", commandType: CommandType.Text);
             
             return Task.CompletedTask;
+        }
+
+        public IEnumerable<FeedbackModel> GetSchoolClass()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddSchool(FeedbackModel item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteSchool(FeedbackModel item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddClass(FeedbackModel item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteClass(FeedbackModel item)
+        {
+            throw new NotImplementedException();
         }
     }
 }
