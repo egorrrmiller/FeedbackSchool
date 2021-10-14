@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
+using FeedbackSchool.Data;
 using FeedbackSchool.Data.EntityFramework;
-using FeedbackSchool.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using FeedbackSchool.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedbackSchool.Controllers
 {
@@ -12,7 +13,7 @@ namespace FeedbackSchool.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        private readonly IRepository<Guest> _repository;
+        private readonly IRepository<Guest, FeedbackModel> _repository;
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -23,7 +24,10 @@ namespace FeedbackSchool.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Guest item)
         {
-            await _repository.Add(item);
+            if (!ModelState.IsValid)
+                return View();
+            
+            await _repository.AddFeedback(item);
             return View("Okay", item);
         }
 
