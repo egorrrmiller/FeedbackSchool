@@ -6,6 +6,7 @@ namespace FeedbackSchool.Data.EntityFramework
     public sealed class ApplicationContext : DbContext
     {
         public DbSet<Guest> FeedbackList { get; set; }
+        public DbSet<FeedbackModel> FeedbackModel { get; set; }
 
         public ApplicationContext()
         {
@@ -16,6 +17,15 @@ namespace FeedbackSchool.Data.EntityFramework
         {
             optionsBuilder.UseSqlite(Startup.Connection);
             base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<FeedbackModel>()
+                .Property(f => f.Id)
+                .ValueGeneratedOnAdd();
+            
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
