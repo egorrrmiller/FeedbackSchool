@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using FeedbackSchool.Interfaces;
 using FeedbackSchool.Models;
 
 namespace FeedbackSchool.Data.EntityFramework
 {
-    public class EfRepository : IRepository<Guest>
+    public class EfRepository : IRepository<Guest, FeedbackModel>
     {
         public IEnumerable<Guest> GetAllList()
         {
@@ -16,7 +15,7 @@ namespace FeedbackSchool.Data.EntityFramework
             return context.FeedbackList.ToList();
         }
 
-        public Task Add(Guest item)
+        public Task AddFeedback(Guest item)
         {
             using var context = new ApplicationContext();
 
@@ -26,7 +25,7 @@ namespace FeedbackSchool.Data.EntityFramework
                 Class = item.Class,
                 Name = item.Name,
                 Feedback = item.Feedback,
-                FavoriteLessons = item.FavoriteLessons,
+                FavoriteLessons = item.FavoriteLessons ?? string.Empty,
                 DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture)
             });
 
@@ -35,7 +34,7 @@ namespace FeedbackSchool.Data.EntityFramework
             return Task.CompletedTask;
         }
 
-        public Task Delete(int id)
+        public Task DeleteFeedback(int id)
         {
             using var context = new ApplicationContext();
             context.FeedbackList.Remove(new Guest
@@ -47,7 +46,7 @@ namespace FeedbackSchool.Data.EntityFramework
             return Task.CompletedTask;
         }
 
-        public Task DeleteAll()
+        public Task DeleteAllFeedback()
         {
             
             //BUG ФУЛЛ ПАРАША, ДЛЯ AdminController ЛУЧШЕ ЮЗАТЬ РЕАЛИЗАЦИЮ С ДАППЕРОМ
@@ -61,6 +60,68 @@ namespace FeedbackSchool.Data.EntityFramework
                 });
 
             context.SaveChanges();
+            return Task.CompletedTask;
+        }
+
+        public IEnumerable<FeedbackModel> GetSchoolClass()
+        {
+            using var context = new ApplicationContext();
+            return context.FeedbackModel.ToList();
+        }
+
+        public Task AddSchool(FeedbackModel item)
+        {
+            using var context = new ApplicationContext();
+
+            context.FeedbackModel.Add(new FeedbackModel()
+            {
+                School = item.School
+            });
+
+            context.SaveChanges();
+
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteSchool(FeedbackModel item)
+        {
+            using var context = new ApplicationContext();
+
+            context.FeedbackModel.Remove(new FeedbackModel()
+            {
+                Id = item.Id
+            });
+
+            context.SaveChanges();
+
+            return Task.CompletedTask;
+        }
+
+        public Task AddClass(FeedbackModel item)
+        {
+            using var context = new ApplicationContext();
+
+            context.FeedbackModel.Add(new FeedbackModel()
+            {
+                Class = item.Class
+            });
+
+            context.SaveChanges();
+
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteClass(FeedbackModel item)
+        {
+            using var context = new ApplicationContext();
+
+            context.FeedbackModel.Remove(new FeedbackModel()
+            {
+                Id = item.Id
+            });
+
+            context.SaveChanges();
+
             return Task.CompletedTask;
         }
     }
