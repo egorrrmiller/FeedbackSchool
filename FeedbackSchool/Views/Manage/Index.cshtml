@@ -1,0 +1,123 @@
+﻿@model FeedbackSchool.Data.IRepository<Guest, FeedbackModel>
+
+<link rel="stylesheet" href="~/css/validate.css"/>
+
+<hr/>
+<div class="form-group">
+    <div class="text-center">
+        <a asp-action="DeleteAllFeedback" class="btn btn-success">Очистить БД</a>
+    </div>
+</div>
+<hr/>
+
+@using (Html.BeginForm("Index", "Manage", FormMethod.Post))
+{
+    @Html.ValidationSummary(false, "", new {@class = "text-danger validate"})
+
+    <div class="form-group" style="text-align: center;">
+        @Html.TextBox("feedbacks", null, null, new
+        {
+            placeholder = "№ отзывов через запятую",
+            @class = "form-control"
+        })
+    </div>
+    <div class="text-center">
+        <input type="submit" value="Удалить отзыв" class="btn btn-success"/>
+    </div>
+}
+<hr/>
+
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-6 col-xxl-6 offset-xxl-0" style="border-right-style: solid;border-right-color: rgb(125,125,125);">
+            @using (Html.BeginForm("AddSchool", "Manage", FormMethod.Post))
+            {
+                <div class="row" style="margin: auto;">
+                    <div class="col-xxl-12 offset-xxl-0">
+
+                        @Html.TextBox("addSchool", null, null,
+                            new
+                            {
+                                @class = "border rounded-0 form-control-sm",
+                                placeholder = "Название школы",
+                                style = "text-align: center;width: 350px;"
+                            })
+
+                    </div>
+                    <input type="submit" value="Добавить" class="btn btn-primary" style="margin: auto;"/>
+                    <div class="table" style="margin: 15px;">
+                        <table class="table" style="text-align: center;">
+                            <thead>
+                                <tr>
+                                    <th>Школа</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            @foreach (var item in Model.GetSchoolClass())
+                            {
+                                if (item.School != null)
+                                {
+                                    <tr>
+                                        <td>@item.School</td>
+                                        <td>
+                                            <a asp-action="DeleteSchool" asp-route-id="@item.Id">Удалить</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-6 col-xxl-6 offset-xxl-0" style="border-right-style: solid;border-right-color: rgb(125,125,125);">
+            @using (Html.BeginForm("AddClass", "Manage", FormMethod.Post))
+            {
+                <div class="row" style="margin: auto;">
+                    <div class="col-xxl-12 offset-xxl-0">
+
+                        @Html.TextBox("addClass", null, null,
+                            new
+                            {
+                                @class = "border rounded-0 form-control-sm",
+                                placeholder = "Класс",
+                                style = "text-align: center;width: 350px;"
+                            })
+                    </div>
+                    <input type="submit" value="Добавить" class="btn btn-primary" style="margin: auto;"/>
+                    <div class="table" style="margin: 15px;">
+                        <table class="table" style="text-align: center;">
+                            <thead>
+                                <tr>
+                                    <th>Класс</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            @foreach (var item in Model.GetSchoolClass())
+                            {
+                                if (item.Class != null)
+                                {
+                                    <tr>
+                                        <td>@item.Class</td>
+                                        <td>
+                                            <a asp-action="DeleteSchool" asp-route-id="@item.Id">Удалить</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

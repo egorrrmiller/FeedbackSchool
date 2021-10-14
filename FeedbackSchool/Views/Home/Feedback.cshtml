@@ -1,4 +1,4 @@
-﻿@model FeedbackSchool.Interfaces.IRepository<Guest>
+﻿@model FeedbackSchool.Data.IRepository<Guest, FeedbackModel>
 
 <link href="~/css/table.css" rel="stylesheet"/>
 <div class="panel-success">
@@ -7,12 +7,12 @@
     </div>
     <div class="panel-body">
 
-        @using (Html.BeginForm("DownloadDb", "Admin"))
+        @using (Html.BeginForm("DownloadDb", "Manage"))
         {
             <button class="btn btn-primary" type="submit">Скачать БД</button>
         }
-        
-        
+
+
         <table class="container">
             <thead>
             <tr>
@@ -27,7 +27,6 @@
             </thead>
             <tbody>
             @{
-
                 foreach (var test in Model.GetAllList())
                 {
                     <tr>
@@ -35,7 +34,16 @@
                         <td data-label="Класс"> @test.Class</td>
                         <td data-label="Имя ученика"> @test.Name</td>
                         <td data-label="Отзыв"> @test.Feedback</td>
-                        <td data-label="Любимые уроки"> @test.FavoriteLessons</td>
+
+                        @if (test.FavoriteLessons == null)
+                        {
+                            <td data-label="Любимые уроки"></td>
+                        }
+                        else
+                        {
+                            <td data-label="Любимые уроки">@test.FavoriteLessons</td>
+                        }
+
                         <td data-label="Время отправки">@test.DateTime</td>
                         <td data-label="Номер отзыва"> @test.Id</td>
                     </tr>

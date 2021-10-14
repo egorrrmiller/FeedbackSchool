@@ -1,4 +1,25 @@
-﻿@model Guest
+﻿@using FeedbackSchool.Data.EntityFramework
+@model Guest
+
+@{
+    var context = new ApplicationContext();
+
+    var school = (from item in context.FeedbackModel
+        where item.School != null
+        select new SelectListItem()
+        {
+            Text = item.School, Value = item.School
+        }).ToList();
+
+    var classes = (from item in context.FeedbackModel
+        where item.Class != null
+        select new SelectListItem()
+        {
+            Text = item.Class, Value = item.Class
+        }).ToList();
+    
+    await context.DisposeAsync();
+}
 
 <div class="panel-success">
     <div class="panel-heading text-center">
@@ -8,44 +29,44 @@
         @using (Html.BeginForm())
         {
             @Html.ValidationSummary(false, "", new {@class = "text-danger"})
-            <div class="form-group"> @* Представьтесь *@
+            <div class="form-group">
+                @* Представьтесь *@
                 @Html.LabelFor(model => model.Name)
                 @Html.TextBoxFor(model => model.Name, new {@class = "form-control", placeholder = "Фамилия и Имя "})
             </div>
 
-            <div class="form-group"> @* Выберите школу, в которой обучаетесь *@
+            <div class="form-group">
+                @* Выберите школу, в которой обучаетесь *@
                 @Html.LabelFor(model => model.School)
-                @Html.DropDownListFor(model => model.School, new[]
-                {
-                    new SelectListItem() {Text = "МКОУ \"Киреевский Центр Образования №1\"", Value = "МКОУ Киреевский Центр Образования №1"},
-                    new SelectListItem() {Text = "МКОУ \"Киреевский Центр Образования №2\"", Value = "МКОУ Киреевский Центр Образования №2"},
-                    new SelectListItem() {Text = "МКОУ \"Киреевский Центр Образования №3\"", Value = "МКОУ Киреевский Центр Образования №3"},
-                    new SelectListItem() {Text = "МКОУ \"Киреевский Центр Образования №4\"", Value = "МКОУ Киреевский Центр Образования №4"}
-                }, "Выберите школу", new {@class = "form-control"})
+                @Html.DropDownListFor(model => model.School, school, "Выберите школу", new {@class = "form-control"})
             </div>
-            <div class="form-group"> @* Выберите класс, в котором обучаетесь *@
+            <div class="form-group">
+                @* Выберите класс, в котором обучаетесь *@
                 @Html.LabelFor(model => model.Class)
-                @Html.DropDownListFor(model => model.Class, new[]
-                {
-                    new SelectListItem() {Text = "10А", Value = "10A"},
-                    new SelectListItem() {Text = "10Б", Value = "10Б"},
-                    new SelectListItem() {Text = "9А", Value = "9A"},
-                    new SelectListItem() {Text = "9Б", Value = "9Б"},
-                }, "Выберите класс", new {@class = "form-control", placeholder = "Выберите свой класс"})
+                @Html.DropDownListFor(model => model.Class, classes, "Выберите класс", new {@class = "form-control", placeholder = "Выберите свой класс"})
             </div>
 
-            <div class="form-group"> @* Отзыв о вашей школе *@
+            <div class="form-group">
+                @* Отзыв о вашей школе *@
                 @Html.LabelFor(model => model.Feedback)
-                @Html.TextAreaFor(model => model.Feedback, new {@class = "form-control", 
-                    placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"})
+                @Html.TextAreaFor(model => model.Feedback, new
+                {
+                    @class = "form-control",
+                    placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"
+                })
             </div>
 
-            <div class="form-group"> @* Ваши любимые уроки *@
+            <div class="form-group">
+                @* Ваши любимые уроки *@
                 @Html.LabelFor(model => model.FavoriteLessons)
-                @Html.TextAreaFor(model => model.FavoriteLessons, new {@class = "form-control", 
-                    placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"})
+                @Html.TextAreaFor(model => model.FavoriteLessons, new
+                {
+                    @class = "form-control",
+                    placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"
+                })
             </div>
-            <div class="text-center"> @* Кнопка "Отправить отзыв" *@
+            <div class="text-center">
+                @* Кнопка "Отправить отзыв" *@
                 <input type="submit" value="Отправить отзыв" class="btn btn-success"/>
             </div>
         }
