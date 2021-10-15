@@ -17,7 +17,7 @@
         {
             Text = item.Class, Value = item.Class
         }).ToList();
-    
+
     await context.DisposeAsync();
 }
 
@@ -34,6 +34,7 @@
                 @Html.LabelFor(model => model.Name)
                 @Html.TextBoxFor(model => model.Name, new {@class = "form-control", placeholder = "Фамилия и Имя "})
             </div>
+
 
             <div class="form-group">
                 @* Выберите школу, в которой обучаетесь *@

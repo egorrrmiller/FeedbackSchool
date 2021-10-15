@@ -12,7 +12,6 @@
             <button class="btn btn-primary" type="submit">Скачать БД</button>
         }
 
-
         <table class="container">
             <thead>
             <tr>
@@ -27,25 +26,25 @@
             </thead>
             <tbody>
             @{
-                foreach (var test in Model.GetAllList())
+                foreach (var item in Model.GetAllList())
                 {
                     <tr>
-                        <td data-label="Школа"> @test.School</td>
-                        <td data-label="Класс"> @test.Class</td>
-                        <td data-label="Имя ученика"> @test.Name</td>
-                        <td data-label="Отзыв"> @test.Feedback</td>
+                        <td data-label="Школа"> @item.School</td>
+                        <td data-label="Класс"> @item.Class</td>
+                        <td data-label="Имя ученика"> @item.Name</td>
+                        <td data-label="Отзыв"> @item.Feedback</td>
 
-                        @if (test.FavoriteLessons == null)
+                        @if (item.FavoriteLessons == null)
                         {
                             <td data-label="Любимые уроки"></td>
                         }
                         else
                         {
-                            <td data-label="Любимые уроки">@test.FavoriteLessons</td>
+                            <td data-label="Любимые уроки">@item.FavoriteLessons</td>
                         }
 
-                        <td data-label="Время отправки">@test.DateTime</td>
-                        <td data-label="Номер отзыва"> @test.Id</td>
+                        <td data-label="Время отправки">@item.DateTime</td>
+                        <td data-label="Номер отзыва"> @item.Id</td>
                     </tr>
                 }
             }
