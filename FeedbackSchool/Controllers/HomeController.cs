@@ -5,7 +5,6 @@ using FeedbackSchool.Data.EntityFramework;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using FeedbackSchool.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace FeedbackSchool.Controllers
 {
@@ -24,11 +23,18 @@ namespace FeedbackSchool.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Guest item)
         {
-            if (!ModelState.IsValid)
-                return View();
-            
-            await _repository.AddFeedback(item);
-            return View("Okay", item);
+            ViewResult view;
+
+            if (ModelState.IsValid)
+            {
+                await _repository.AddFeedback(item);
+                view = View("Okay", item);
+            }
+            else
+                view = View();
+
+
+            return view;
         }
 
         [HttpGet]
