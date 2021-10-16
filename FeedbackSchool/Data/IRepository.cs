@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using FeedbackSchool.Models;
 
 namespace FeedbackSchool.Data
 {

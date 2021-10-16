@@ -49,7 +49,7 @@ namespace FeedbackSchool.Data.EntityFramework
         public Task DeleteAllFeedback()
         {
             
-            //BUG ФУЛЛ ПАРАША, ДЛЯ AdminController ЛУЧШЕ ЮЗАТЬ РЕАЛИЗАЦИЮ С ДАППЕРОМ
+            //BUG ФУЛЛ ПАРАША, ДЛЯ ManageController ЛУЧШЕ ЮЗАТЬ РЕАЛИЗАЦИЮ С ДАППЕРОМ
             
             using var context = new ApplicationContext();
 
