@@ -83,7 +83,7 @@ namespace FeedbackSchool.Data.EntityFramework
             return Task.CompletedTask;
         }
 
-        public Task DeleteSchool(FeedbackModel item)
+        public Task DeleteSchoolOrClass(FeedbackModel item)
         {
             using var context = new ApplicationContext();
 
@@ -104,20 +104,6 @@ namespace FeedbackSchool.Data.EntityFramework
             context.FeedbackModel.Add(new FeedbackModel()
             {
                 Class = item.Class
-            });
-
-            context.SaveChanges();
-
-            return Task.CompletedTask;
-        }
-
-        public Task DeleteClass(FeedbackModel item)
-        {
-            using var context = new ApplicationContext();
-
-            context.FeedbackModel.Remove(new FeedbackModel()
-            {
-                Id = item.Id
             });
 
             context.SaveChanges();

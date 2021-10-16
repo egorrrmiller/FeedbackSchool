@@ -15,8 +15,8 @@ namespace FeedbackSchool.Data
 
         IEnumerable<U> GetSchoolClass();
         Task AddSchool(U item);
-        Task DeleteSchool(U item);
         Task AddClass(U item);
-        Task DeleteClass(U item);
+        Task DeleteSchoolOrClass(U item);
+        
     }
 }

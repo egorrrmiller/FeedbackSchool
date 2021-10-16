@@ -26,7 +26,8 @@ namespace FeedbackSchool.Data.Dapper
             if (db.State == ConnectionState.Closed)
                 db.Open();
 
-            db.Query<Guest>($"INSERT INTO FeedbackList (School, Class, Name, Feedback, FavoriteLessons, DateTime) VALUES (@School, @Class, @Name, @Feedback, @FavoriteLessons, @DateTime)",
+            db.Query<Guest>(
+                $"INSERT INTO FeedbackList (School, Class, Name, Feedback, FavoriteLessons, DateTime) VALUES (@School, @Class, @Name, @Feedback, @FavoriteLessons, @DateTime)",
                 new
                 {
                     School = item.School,
@@ -36,7 +37,7 @@ namespace FeedbackSchool.Data.Dapper
                     FavoriteLessons = item.FavoriteLessons,
                     DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture)
                 }, commandType: CommandType.Text);
-            
+
             return Task.CompletedTask;
         }
 
@@ -45,8 +46,8 @@ namespace FeedbackSchool.Data.Dapper
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
                 db.Open();
-            db.Query<Guest>($"DELETE FROM FeedbackList where Id =@Id", new { Id = id }, commandType: CommandType.Text);
-            
+            db.Query<Guest>($"DELETE FROM FeedbackList where Id =@Id", new {Id = id}, commandType: CommandType.Text);
+
             return Task.CompletedTask;
         }
 
@@ -55,9 +56,9 @@ namespace FeedbackSchool.Data.Dapper
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
                 db.Open();
-            
+
             db.Query<Guest>($"DELETE FROM FeedbackList WHERE 1", commandType: CommandType.Text);
-            
+
             return Task.CompletedTask;
         }
 
@@ -81,17 +82,7 @@ namespace FeedbackSchool.Data.Dapper
                 {
                     School = item.School
                 }, commandType: CommandType.Text);
-            
-            return Task.CompletedTask;
-        }
 
-        public Task DeleteSchool(FeedbackModel item)
-        {
-            using IDbConnection db = new SqliteConnection(Startup.Connection);
-            if (db.State == ConnectionState.Closed)
-                db.Open();
-            db.Query<FeedbackModel>($"DELETE FROM FeedbackModel where Id =@Id", new { Id = item.Id }, commandType: CommandType.Text);
-            
             return Task.CompletedTask;
         }
 
@@ -106,17 +97,18 @@ namespace FeedbackSchool.Data.Dapper
                 {
                     Class = item.Class
                 }, commandType: CommandType.Text);
-            
+
             return Task.CompletedTask;
         }
 
-        public Task DeleteClass(FeedbackModel item)
+        public Task DeleteSchoolOrClass(FeedbackModel item)
         {
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
                 db.Open();
-            db.Query<FeedbackModel>($"DELETE FROM FeedbackModel where Id =@Id", new { Id = item.Id }, commandType: CommandType.Text);
-            
+            db.Query<FeedbackModel>($"DELETE FROM FeedbackModel where Id =@Id", new {Id = item.Id},
+                commandType: CommandType.Text);
+
             return Task.CompletedTask;
         }
     }

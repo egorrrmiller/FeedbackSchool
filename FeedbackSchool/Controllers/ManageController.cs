@@ -8,8 +8,8 @@ using FeedbackSchool.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace FeedbackSchool.Controllers
 {
@@ -19,9 +19,9 @@ namespace FeedbackSchool.Controllers
         private readonly IRepository<Guest, FeedbackModel> _repository;
         private readonly RedirectToActionResult _redirectToAction;
         private readonly UserManager<FeedbackSchoolUser> _userManager;
-        private readonly ILogger<ManageController> _logger;
+        private readonly ILogger _logger;
 
-        public ManageController(UserManager<FeedbackSchoolUser> userManager, ILogger<ManageController> logger)
+        public ManageController(UserManager<FeedbackSchoolUser> userManager, ILogger logger)
         {
             _repository = new EfRepository();
 
@@ -65,7 +65,7 @@ namespace FeedbackSchool.Controllers
             else
                 view = View(_repository);
 
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} удалил {count} отзыв(-ов)");
+            _logger.Information($"Пользователь {_userManager.GetUserName(User)} удалил {count} отзыв(-ов)");
 
             return view;
         }
@@ -76,7 +76,7 @@ namespace FeedbackSchool.Controllers
                 JsonConvert.SerializeObject(_repository.GetAllList()));
             Response.Headers.Add("Content-Disposition", "attachment; filename=DataBase.json");
 
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} скачал базу даных");
+            _logger.Information($"Пользователь {_userManager.GetUserName(User)} скачал базу даных");
 
             return new FileContentResult(await System.IO.File.ReadAllBytesAsync("DataBase.json"), "application/json");
         }
@@ -87,7 +87,7 @@ namespace FeedbackSchool.Controllers
         {
             await _repository.DeleteAllFeedback();
 
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} удалил все отзывы");
+            _logger.Information($"Пользователь {_userManager.GetUserName(User)} удалил все отзывы");
 
             return _redirectToAction;
         }
@@ -96,19 +96,7 @@ namespace FeedbackSchool.Controllers
         {
             await _repository.AddSchool(new FeedbackModel() {School = addSchool});
 
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} добавил школу {addSchool}");
-
-            return _redirectToAction;
-        }
-
-        public async Task<IActionResult> DeleteSchool(string id)
-        {
-            var school = _repository.GetSchoolClass().FirstOrDefault(f => f.Id == id)?.School;
-
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} удалил школу {school}");
-            
-            
-            await _repository.DeleteSchool(new FeedbackModel() {Id = id});
+            _logger.Information($"Пользователь {_userManager.GetUserName(User)} добавил школу {addSchool}");
 
             return _redirectToAction;
         }
@@ -117,20 +105,25 @@ namespace FeedbackSchool.Controllers
         {
             await _repository.AddClass(new FeedbackModel() {Class = addClass});
 
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} добавил {addClass} класс ");
+            _logger.Information($"Пользователь {_userManager.GetUserName(User)} добавил {addClass} класс ");
 
             return _redirectToAction;
         }
 
-        public async Task<IActionResult> DeleteClass(string id)
+        public async Task<IActionResult> DeleteSchoolOrClass(string id)
         {
+            var school = _repository.GetSchoolClass().FirstOrDefault(f => f.Id == id)?.School;
             var classes = _repository.GetSchoolClass().FirstOrDefault(f => f.Id == id)?.Class;
 
-            _logger.LogInformation($"Пользователь {_userManager.GetUserName(User)} удалил {classes} класс");
+            
+            
+            _logger.Information(school != null
+                ? $"Пользователь {_userManager.GetUserName(User)} удалил школу {school}"
+                : $"Пользователь {_userManager.GetUserName(User)} удалил {classes} класс");
 
-            
-            await _repository.DeleteClass(new FeedbackModel() {Id = id});
-            
+
+            await _repository.DeleteSchoolOrClass(new FeedbackModel() {Id = id});
+
             return _redirectToAction;
         }
 
