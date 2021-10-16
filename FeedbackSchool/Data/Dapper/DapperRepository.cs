@@ -63,27 +63,61 @@ namespace FeedbackSchool.Data.Dapper
 
         public IEnumerable<FeedbackModel> GetSchoolClass()
         {
-            throw new NotImplementedException();
+            using IDbConnection db = new SqliteConnection(Startup.Connection);
+            if (db.State == ConnectionState.Closed)
+                db.Open();
+
+            return db.Query<FeedbackModel>("SELECT * FROM FeedbackModel", commandType: CommandType.Text);
         }
 
         public Task AddSchool(FeedbackModel item)
         {
-            throw new NotImplementedException();
+            using IDbConnection db = new SqliteConnection(Startup.Connection);
+            if (db.State == ConnectionState.Closed)
+                db.Open();
+
+            db.Query<FeedbackModel>($"INSERT INTO FeedbackModel (School) VALUES (@School)",
+                new
+                {
+                    School = item.School
+                }, commandType: CommandType.Text);
+            
+            return Task.CompletedTask;
         }
 
         public Task DeleteSchool(FeedbackModel item)
         {
-            throw new NotImplementedException();
+            using IDbConnection db = new SqliteConnection(Startup.Connection);
+            if (db.State == ConnectionState.Closed)
+                db.Open();
+            db.Query<FeedbackModel>($"DELETE FROM FeedbackModel where Id =@Id", new { Id = item.Id }, commandType: CommandType.Text);
+            
+            return Task.CompletedTask;
         }
 
         public Task AddClass(FeedbackModel item)
         {
-            throw new NotImplementedException();
+            using IDbConnection db = new SqliteConnection(Startup.Connection);
+            if (db.State == ConnectionState.Closed)
+                db.Open();
+
+            db.Query<FeedbackModel>($"INSERT INTO FeedbackModel (Class) VALUES (@Class)",
+                new
+                {
+                    Class = item.Class
+                }, commandType: CommandType.Text);
+            
+            return Task.CompletedTask;
         }
 
         public Task DeleteClass(FeedbackModel item)
         {
-            throw new NotImplementedException();
+            using IDbConnection db = new SqliteConnection(Startup.Connection);
+            if (db.State == ConnectionState.Closed)
+                db.Open();
+            db.Query<FeedbackModel>($"DELETE FROM FeedbackModel where Id =@Id", new { Id = item.Id }, commandType: CommandType.Text);
+            
+            return Task.CompletedTask;
         }
     }
 }
