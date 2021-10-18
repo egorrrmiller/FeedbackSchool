@@ -40,7 +40,7 @@ namespace FeedbackSchool.Controllers
         {
             // потом мб придумаю что-то лучше
 
-            ViewResult view;
+            var view = View(_repository);
 
             var count = 0;
             if (ModelState.IsValid)
@@ -52,8 +52,6 @@ namespace FeedbackSchool.Controllers
                         await _repository.DeleteFeedback(int.Parse(feedbackNumber));
                         count++;
                     }
-
-                    view = View(_repository);
                 }
                 catch (FormatException e)
                 {
@@ -61,11 +59,13 @@ namespace FeedbackSchool.Controllers
                     ModelState.AddModelError("FormatException", $"До ошибки было удалено {count} отзыв(-ов)");
                     view = View(_repository);
                 }
+                finally
+                {
+                    _logger.Information($"Пользователь {_userManager.GetUserName(User)} удалил {count} отзыв(-ов)");
+                }
             }
             else
                 view = View(_repository);
-
-            _logger.Information($"Пользователь {_userManager.GetUserName(User)} удалил {count} отзыв(-ов)");
 
             return view;
         }
@@ -115,8 +115,6 @@ namespace FeedbackSchool.Controllers
             var school = _repository.GetSchoolClass().FirstOrDefault(f => f.Id == id)?.School;
             var classes = _repository.GetSchoolClass().FirstOrDefault(f => f.Id == id)?.Class;
 
-            
-            
             _logger.Information(school != null
                 ? $"Пользователь {_userManager.GetUserName(User)} удалил школу {school}"
                 : $"Пользователь {_userManager.GetUserName(User)} удалил {classes} класс");

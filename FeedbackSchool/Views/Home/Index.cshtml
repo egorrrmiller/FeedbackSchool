@@ -10,7 +10,7 @@
         {
             Text = item.School, Value = item.School
         }).ToList();
-
+    
     var classes = (from item in context.FeedbackModel
         where item.Class != null
         select new SelectListItem()
@@ -35,12 +35,12 @@
                 @Html.TextBoxFor(model => model.Name, new {@class = "form-control", placeholder = "Фамилия и Имя "})
             </div>
 
-
             <div class="form-group">
                 @* Выберите школу, в которой обучаетесь *@
                 @Html.LabelFor(model => model.School)
                 @Html.DropDownListFor(model => model.School, school, "Выберите школу", new {@class = "form-control"})
             </div>
+            
             <div class="form-group">
                 @* Выберите класс, в котором обучаетесь *@
                 @Html.LabelFor(model => model.Class)
@@ -66,6 +66,7 @@
                     placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"
                 })
             </div>
+            
             <div class="text-center">
                 @* Кнопка "Отправить отзыв" *@
                 <input type="submit" value="Отправить отзыв" class="btn btn-success"/>
