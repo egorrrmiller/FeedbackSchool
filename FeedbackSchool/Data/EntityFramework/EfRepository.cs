@@ -47,10 +47,7 @@ namespace FeedbackSchool.Data.EntityFramework
         }
 
         public Task DeleteAllFeedback()
-        {
-            
-            //BUG ФУЛЛ ПАРАША, ДЛЯ ManageController ЛУЧШЕ ЮЗАТЬ РЕАЛИЗАЦИЮ С ДАППЕРОМ
-            
+        {           
             using var context = new ApplicationContext();
 
             foreach (var guest in new ApplicationContext().FeedbackList)
