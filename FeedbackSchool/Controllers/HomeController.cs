@@ -19,14 +19,12 @@ namespace FeedbackSchool.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(Guest item)
         {
-            var view = View("Okay", item);;
-
             if (ModelState.IsValid)
                 await _repository.AddFeedback(item);
             else
-                view = View();
+                return View();
 
-            return view;
+            return View("Okay", item);
         }
 
         [HttpGet]
