@@ -9,7 +9,7 @@ namespace FeedbackSchool.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRepository<Guest, FeedbackModel> _repository;
+        private readonly IRepository<FeedbackList, FeedbackModel> _repository;
 
         public HomeController()
         {
@@ -17,7 +17,7 @@ namespace FeedbackSchool.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(Guest item)
+        public async Task<IActionResult> Index(FeedbackList item)
         {
             if (ModelState.IsValid)
                 await _repository.AddFeedback(item);

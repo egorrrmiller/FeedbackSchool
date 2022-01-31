@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FeedbackSchool.Areas.Identity.Data;
 using FeedbackSchool.Data;
@@ -16,7 +17,7 @@ namespace FeedbackSchool.Controllers
     [Authorize]
     public sealed class ManageController : Controller
     {
-        private readonly IRepository<Guest, FeedbackModel> _repository;
+        private readonly IRepository<FeedbackList, FeedbackModel> _repository;
         private readonly RedirectToActionResult _redirectToAction;
         private readonly UserManager<FeedbackSchoolUser> _userManager;
         private readonly ILogger _logger;
@@ -66,15 +67,11 @@ namespace FeedbackSchool.Controllers
             return View(_repository);
         }
 
-        public async Task<ActionResult> DownloadDb()
+        public Task<ActionResult> DownloadDb()
         {
-            await System.IO.File.WriteAllTextAsync("DataBase.json",
-                JsonConvert.SerializeObject(_repository.GetAllList()));
-            Response.Headers.Add("Content-Disposition", "attachment; filename=DataBase.json");
-
             _logger.Information("Пользователь {UserName} скачал базу даных", _userManager.GetUserName(User));
-
-            return new FileContentResult(await System.IO.File.ReadAllBytesAsync("DataBase.json"), "application/json");
+            
+             return Task.FromResult<ActionResult>(File(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_repository.GetAllList())), "application/json", $"DataBase.json"));
         }
 
         #region Trash.... Выглядит как говно если честно...

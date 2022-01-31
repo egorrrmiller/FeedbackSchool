@@ -9,24 +9,24 @@ using Microsoft.Data.Sqlite;
 
 namespace FeedbackSchool.Data.Dapper
 {
-    public class DapperRepository : IRepository<Guest, FeedbackModel>
+    public class DapperRepository : IRepository<FeedbackList, FeedbackModel>
     {
-        public IEnumerable<Guest> GetAllList()
+        public IEnumerable<FeedbackList> GetAllList()
         {
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
                 db.Open();
 
-            return db.Query<Guest>("SELECT * FROM FeedbackList", commandType: CommandType.Text);
+            return db.Query<FeedbackList>("SELECT * FROM FeedbackList", commandType: CommandType.Text);
         }
 
-        public Task AddFeedback(Guest item)
+        public Task AddFeedback(FeedbackList item)
         {
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
                 db.Open();
 
-            db.Query<Guest>(
+            db.Query<FeedbackList>(
                 $"INSERT INTO FeedbackList (School, Class, Name, Feedback, FavoriteLessons, DateTime) VALUES (@School, @Class, @Name, @Feedback, @FavoriteLessons, @DateTime)",
                 new
                 {
@@ -46,7 +46,7 @@ namespace FeedbackSchool.Data.Dapper
             using IDbConnection db = new SqliteConnection(Startup.Connection);
             if (db.State == ConnectionState.Closed)
                 db.Open();
-            db.Query<Guest>($"DELETE FROM FeedbackList where Id =@Id", new {Id = id}, commandType: CommandType.Text);
+            db.Query<FeedbackList>($"DELETE FROM FeedbackList where Id =@Id", new {Id = id}, commandType: CommandType.Text);
 
             return Task.CompletedTask;
         }
@@ -57,7 +57,7 @@ namespace FeedbackSchool.Data.Dapper
             if (db.State == ConnectionState.Closed)
                 db.Open();
 
-            db.Query<Guest>($"DELETE FROM FeedbackList WHERE 1", commandType: CommandType.Text);
+            db.Query<FeedbackList>($"DELETE FROM FeedbackList WHERE 1", commandType: CommandType.Text);
 
             return Task.CompletedTask;
         }

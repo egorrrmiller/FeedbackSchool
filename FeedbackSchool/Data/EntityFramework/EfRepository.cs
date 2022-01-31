@@ -7,19 +7,19 @@ using FeedbackSchool.Models;
 
 namespace FeedbackSchool.Data.EntityFramework
 {
-    public class EfRepository : IRepository<Guest, FeedbackModel>
+    public class EfRepository : IRepository<FeedbackList, FeedbackModel>
     {
-        public IEnumerable<Guest> GetAllList()
+        public IEnumerable<FeedbackList> GetAllList()
         {
             using var context = new ApplicationContext();
             return context.FeedbackList.ToList();
         }
 
-        public Task AddFeedback(Guest item)
+        public Task AddFeedback(FeedbackList item)
         {
             using var context = new ApplicationContext();
 
-            context.FeedbackList.Add(new Guest()
+            context.FeedbackList.Add(new FeedbackList()
             {
                 School = item.School,
                 Class = item.Class,
@@ -37,7 +37,7 @@ namespace FeedbackSchool.Data.EntityFramework
         public Task DeleteFeedback(int id)
         {
             using var context = new ApplicationContext();
-            context.FeedbackList.Remove(new Guest
+            context.FeedbackList.Remove(new FeedbackList
             {
                 Id = id
             });
@@ -51,7 +51,7 @@ namespace FeedbackSchool.Data.EntityFramework
             using var context = new ApplicationContext();
 
             foreach (var guest in new ApplicationContext().FeedbackList)
-                context.FeedbackList.Remove(new Guest()
+                context.FeedbackList.Remove(new FeedbackList()
                 {
                     Id = guest.Id
                 });

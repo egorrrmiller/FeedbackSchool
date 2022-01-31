@@ -5,7 +5,7 @@ namespace FeedbackSchool.Data.EntityFramework
 {
     public sealed class ApplicationContext : DbContext
     {
-        public DbSet<Guest> FeedbackList { get; set; }
+        public DbSet<FeedbackList> FeedbackList { get; set; }
         public DbSet<FeedbackModel> FeedbackModel { get; set; }
 
         public ApplicationContext()

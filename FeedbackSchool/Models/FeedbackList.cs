@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace FeedbackSchool.Models
 {
-    public class Guest
+    public class FeedbackList
     {
         [Display(Name = "Выберите школу, в которой обучаетесь")]
         [Required(ErrorMessage = "Выберите школу, в которой обучаетесь")]
