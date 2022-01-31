@@ -5,107 +5,106 @@ using System.Linq;
 using System.Threading.Tasks;
 using FeedbackSchool.Models;
 
-namespace FeedbackSchool.Data.EntityFramework
+namespace FeedbackSchool.Data.EntityFramework;
+
+public class EfRepository : IRepository<FeedbackList, FeedbackModel>
 {
-    public class EfRepository : IRepository<FeedbackList, FeedbackModel>
+    public IEnumerable<FeedbackList> GetAllList()
     {
-        public IEnumerable<FeedbackList> GetAllList()
-        {
-            using var context = new ApplicationContext();
-            return context.FeedbackList.ToList();
-        }
+        using var context = new ApplicationContext();
+        return context.FeedbackList.ToList();
+    }
 
-        public Task AddFeedback(FeedbackList item)
-        {
-            using var context = new ApplicationContext();
+    public Task AddFeedback(FeedbackList item)
+    {
+        using var context = new ApplicationContext();
 
-            context.FeedbackList.Add(new FeedbackList()
+        context.FeedbackList.Add(new FeedbackList()
+        {
+            School = item.School,
+            Class = item.Class,
+            Name = item.Name,
+            Feedback = item.Feedback,
+            FavoriteLessons = item.FavoriteLessons ?? string.Empty,
+            DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture)
+        });
+
+        context.SaveChanges();
+
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteFeedback(int id)
+    {
+        using var context = new ApplicationContext();
+        context.FeedbackList.Remove(new FeedbackList
+        {
+            Id = id
+        });
+        context.SaveChanges();
+
+        return Task.CompletedTask;
+    }
+
+    public Task DeleteAllFeedback()
+    {
+        using var context = new ApplicationContext();
+
+        foreach (var guest in new ApplicationContext().FeedbackList)
+            context.FeedbackList.Remove(new FeedbackList()
             {
-                School = item.School,
-                Class = item.Class,
-                Name = item.Name,
-                Feedback = item.Feedback,
-                FavoriteLessons = item.FavoriteLessons ?? string.Empty,
-                DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture)
+                Id = guest.Id
             });
 
-            context.SaveChanges();
+        context.SaveChanges();
+        return Task.CompletedTask;
+    }
 
-            return Task.CompletedTask;
-        }
+    public IEnumerable<FeedbackModel> GetSchoolClass()
+    {
+        using var context = new ApplicationContext();
+        return context.FeedbackModel.ToList();
+    }
 
-        public Task DeleteFeedback(int id)
+    public Task AddSchool(FeedbackModel item)
+    {
+        using var context = new ApplicationContext();
+
+        context.FeedbackModel.Add(new FeedbackModel()
         {
-            using var context = new ApplicationContext();
-            context.FeedbackList.Remove(new FeedbackList
-            {
-                Id = id
-            });
-            context.SaveChanges();
+            School = item.School
+        });
 
-            return Task.CompletedTask;
-        }
+        context.SaveChanges();
 
-        public Task DeleteAllFeedback()
-        {           
-            using var context = new ApplicationContext();
+        return Task.CompletedTask;
+    }
 
-            foreach (var guest in new ApplicationContext().FeedbackList)
-                context.FeedbackList.Remove(new FeedbackList()
-                {
-                    Id = guest.Id
-                });
+    public Task DeleteSchoolOrClass(FeedbackModel item)
+    {
+        using var context = new ApplicationContext();
 
-            context.SaveChanges();
-            return Task.CompletedTask;
-        }
-
-        public IEnumerable<FeedbackModel> GetSchoolClass()
+        context.FeedbackModel.Remove(new FeedbackModel()
         {
-            using var context = new ApplicationContext();
-            return context.FeedbackModel.ToList();
-        }
+            Id = item.Id
+        });
 
-        public Task AddSchool(FeedbackModel item)
+        context.SaveChanges();
+
+        return Task.CompletedTask;
+    }
+
+    public Task AddClass(FeedbackModel item)
+    {
+        using var context = new ApplicationContext();
+
+        context.FeedbackModel.Add(new FeedbackModel()
         {
-            using var context = new ApplicationContext();
+            Class = item.Class
+        });
 
-            context.FeedbackModel.Add(new FeedbackModel()
-            {
-                School = item.School
-            });
+        context.SaveChanges();
 
-            context.SaveChanges();
-
-            return Task.CompletedTask;
-        }
-
-        public Task DeleteSchoolOrClass(FeedbackModel item)
-        {
-            using var context = new ApplicationContext();
-
-            context.FeedbackModel.Remove(new FeedbackModel()
-            {
-                Id = item.Id
-            });
-
-            context.SaveChanges();
-
-            return Task.CompletedTask;
-        }
-
-        public Task AddClass(FeedbackModel item)
-        {
-            using var context = new ApplicationContext();
-
-            context.FeedbackModel.Add(new FeedbackModel()
-            {
-                Class = item.Class
-            });
-
-            context.SaveChanges();
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

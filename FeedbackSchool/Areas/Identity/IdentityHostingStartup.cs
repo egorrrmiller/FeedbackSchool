@@ -5,20 +5,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly: HostingStartup(typeof(FeedbackSchool.Areas.Identity.IdentityHostingStartup))]
-namespace FeedbackSchool.Areas.Identity
-{
-    public class IdentityHostingStartup : IHostingStartup
-    {
-        public void Configure(IWebHostBuilder builder)
-        {
-            builder.ConfigureServices((context, services) => {
-                services.AddDbContext<FeedbackSchoolContext>(options =>
-                    options.UseSqlite(
-                        context.Configuration.GetConnectionString("Connection")));
 
-                services.AddDefaultIdentity<FeedbackSchoolUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                    .AddEntityFrameworkStores<FeedbackSchoolContext>();
-            });
-        }
+namespace FeedbackSchool.Areas.Identity;
+
+public class IdentityHostingStartup : IHostingStartup
+{
+    public void Configure(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices((context, services) =>
+        {
+            services.AddDbContext<FeedbackSchoolContext>(options =>
+                options.UseSqlite(
+                    context.Configuration.GetConnectionString("Connection")));
+
+            services.AddDefaultIdentity<FeedbackSchoolUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<FeedbackSchoolContext>();
+        });
     }
 }

@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace FeedbackSchool.Areas.Identity.Pages.Account
-{
-    [AllowAnonymous]
-    public class LockoutModel : PageModel
-    {
-        public void OnGet()
-        {
+namespace FeedbackSchool.Areas.Identity.Pages.Account;
 
-        }
+[AllowAnonymous]
+public class LockoutModel : PageModel
+{
+    public void OnGet()
+    {
     }
 }

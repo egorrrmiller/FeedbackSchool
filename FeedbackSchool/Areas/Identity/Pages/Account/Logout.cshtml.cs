@@ -6,36 +6,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace FeedbackSchool.Areas.Identity.Pages.Account
+namespace FeedbackSchool.Areas.Identity.Pages.Account;
+
+[AllowAnonymous]
+public class LogoutModel : PageModel
 {
-    [AllowAnonymous]
-    public class LogoutModel : PageModel
+    private readonly ILogger<LogoutModel> _logger;
+    private readonly SignInManager<FeedbackSchoolUser> _signInManager;
+
+    public LogoutModel(SignInManager<FeedbackSchoolUser> signInManager, ILogger<LogoutModel> logger)
     {
-        private readonly SignInManager<FeedbackSchoolUser> _signInManager;
-        private readonly ILogger<LogoutModel> _logger;
+        _signInManager = signInManager;
+        _logger = logger;
+    }
 
-        public LogoutModel(SignInManager<FeedbackSchoolUser> signInManager, ILogger<LogoutModel> logger)
+    public void OnGet()
+    {
+    }
+
+    public async Task<IActionResult> OnPost(string returnUrl = null)
+    {
+        await _signInManager.SignOutAsync();
+        _logger.LogInformation("User logged out.");
+        if (returnUrl != null)
         {
-            _signInManager = signInManager;
-            _logger = logger;
+            return LocalRedirect(returnUrl);
         }
-
-        public void OnGet()
+        else
         {
-        }
-
-        public async Task<IActionResult> OnPost(string returnUrl = null)
-        {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToPage();
-            }
+            return RedirectToPage();
         }
     }
 }

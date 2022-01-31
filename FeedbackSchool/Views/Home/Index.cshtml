@@ -4,12 +4,12 @@
 @{
     var context = new ApplicationContext();
 
-    var school  = new List<SelectListItem>();
+    var school = new List<SelectListItem>();
     var classes = new List<SelectListItem>();
-    
-    foreach(var item in context.FeedbackModel)
-        if(item.School != null)
-            school.Add(new SelectListItem() {Text = item.School, Value = item.School});
+
+    foreach (var item in context.FeedbackModel)
+        if (item.School != null)
+            school.Add(new SelectListItem {Text = item.School, Value = item.School});
         else
             classes.Add(new SelectListItem() {Text = item.Class, Value = item.Class});
 
@@ -35,7 +35,7 @@
                 @Html.LabelFor(model => model.School)
                 @Html.DropDownListFor(model => model.School, school, "Выберите школу", new {@class = "form-control"})
             </div>
-            
+
             <div class="form-group">
                 @* Выберите класс, в котором обучаетесь *@
                 @Html.LabelFor(model => model.Class)
@@ -61,7 +61,7 @@
                     placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"
                 })
             </div>
-            
+
             <div class="text-center">
                 @* Кнопка "Отправить отзыв" *@
                 <input type="submit" value="Отправить отзыв" class="btn btn-success"/>
