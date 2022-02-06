@@ -47,7 +47,7 @@ public sealed class ManageController : Controller
             {
                 foreach (var feedbackNumber in feedbacks.Split(','))
                 {
-                    _applicationContext.FeedbackList.Remove(new FeedbackModel {Id = int.Parse(feedbackNumber)});
+                    _applicationContext.Feedback.Remove(new FeedbackModel {Id = int.Parse(feedbackNumber)});
                     await _applicationContext.SaveChangesAsync();
                     count++;
                 }
@@ -73,7 +73,7 @@ public sealed class ManageController : Controller
         _logger.Information("Пользователь {UserName} скачал базу даных", _userManager.GetUserName(User));
 
         return Task.FromResult<ActionResult>(File(
-            Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_applicationContext.FeedbackList.ToList())),
+            Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(_applicationContext.Feedback.ToList())),
             "application/json",
             $"DataBase.json"));
     }
@@ -82,8 +82,8 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> DeleteAllFeedback()
     {
-        foreach (var guest in _applicationContext.FeedbackList)
-            _applicationContext.FeedbackList.Remove(new FeedbackModel()
+        foreach (var guest in _applicationContext.Feedback)
+            _applicationContext.Feedback.Remove(new FeedbackModel()
             {
                 Id = guest.Id
             });
@@ -97,7 +97,7 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> AddSchool(string addSchool)
     {
-        _applicationContext.FeedbackModel.Add(new ManageModel()
+        _applicationContext.Manage.Add(new ManageModel()
         {
             School = addSchool
         });
@@ -112,7 +112,7 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> AddClass(string addClass)
     {
-        _applicationContext.FeedbackModel.Add(new ManageModel()
+        _applicationContext.Manage.Add(new ManageModel()
         {
             Class = addClass
         });
@@ -126,8 +126,8 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> DeleteSchoolOrClass(string id)
     {
-        var school = _applicationContext.FeedbackModel.FirstOrDefault(f => f.Id == id)?.School;
-        var classes = _applicationContext.FeedbackModel.FirstOrDefault(f => f.Id == id)?.Class;
+        var school = _applicationContext.Manage.FirstOrDefault(f => f.Id == id)?.School;
+        var classes = _applicationContext.Manage.FirstOrDefault(f => f.Id == id)?.Class;
 
         if (school != null)
             _logger.Information("Пользователь {UserName} удалил школу {School}", _userManager.GetUserName(User),
@@ -136,7 +136,7 @@ public sealed class ManageController : Controller
             _logger.Information("Пользователь {UserName} удалил {Class} класс", _userManager.GetUserName(User),
                 classes);
 
-        _applicationContext.FeedbackModel.Remove(new ManageModel()
+        _applicationContext.Manage.Remove(new ManageModel()
         {
             Id = id
         });

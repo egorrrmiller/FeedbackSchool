@@ -22,7 +22,7 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
-            _applicationContext.FeedbackList.Add(new FeedbackModel()
+            _applicationContext.Feedback.Add(new FeedbackModel()
             {
                 School = item.School,
                 Class = item.Class,

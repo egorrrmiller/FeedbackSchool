@@ -7,7 +7,7 @@
     var school = new List<SelectListItem>();
     var classes = new List<SelectListItem>();
 
-    foreach (var item in context.FeedbackModel)
+    foreach (var item in context.Manage)
         if (item.School != null)
             school.Add(new SelectListItem {Text = item.School, Value = item.School});
         else

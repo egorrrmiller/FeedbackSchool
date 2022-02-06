@@ -10,8 +10,8 @@ public sealed class ApplicationContext : DbContext
         Database.EnsureCreated();
     }
 
-    public DbSet<FeedbackModel> FeedbackList { get; set; }
-    public DbSet<ManageModel> FeedbackModel { get; set; }
+    public DbSet<FeedbackModel> Feedback { get; set; }
+    public DbSet<ManageModel> Manage { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
