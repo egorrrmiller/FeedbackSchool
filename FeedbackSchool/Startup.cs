@@ -1,4 +1,5 @@
-using FeedbackSchool.Models;
+using FeedbackSchool.Data.EntityFramework;
+using FeedbackSchool.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +26,7 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddTransient<ApplicationContext>();
         services.AddTransient<IdentityErrorDescriber, RussianIdentityErrorDescriber>();
         services.AddTransient<IEmailSender, SendMail>();
         services.AddSingleton<ILogger>(_ =>

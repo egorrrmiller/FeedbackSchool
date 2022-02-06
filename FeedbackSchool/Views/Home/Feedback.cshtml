@@ -1,4 +1,4 @@
-﻿@model FeedbackSchool.Data.IRepository<FeedbackList, FeedbackModel>
+﻿@model FeedbackSchool.Data.EntityFramework.ApplicationContext
 
 <link href="~/css/table.css" rel="stylesheet"/>
 <div class="panel-success">
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             @{
-                foreach (var item in Model.GetAllList())
+                foreach (var item in Model.FeedbackList)
                 {
                     <tr>
                         <td data-label="Школа"> @item.School</td>

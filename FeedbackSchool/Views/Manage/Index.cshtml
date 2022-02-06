@@ -1,4 +1,4 @@
-﻿@model FeedbackSchool.Data.IRepository<FeedbackList, FeedbackModel>
+﻿@model FeedbackSchool.Data.EntityFramework.ApplicationContext
 
 <link rel="stylesheet" href="~/css/validate.css"/>
 
@@ -50,14 +50,14 @@
                     <div class="table" style="margin: 15px;">
                         <table class="table" style="text-align: center;">
                             <thead>
-                                <tr>
-                                    <th>Школа</th>
-                                    <th>Действие</th>
-                                </tr>
+                            <tr>
+                                <th>Школа</th>
+                                <th>Действие</th>
+                            </tr>
                             </thead>
                             <tbody>
 
-                            @foreach (var item in Model.GetSchoolClass())
+                            @foreach (var item in Model.FeedbackModel)
                             {
                                 if (item.School != null)
                                 {
@@ -94,14 +94,14 @@
                     <div class="table" style="margin: 15px;">
                         <table class="table" style="text-align: center;">
                             <thead>
-                                <tr>
-                                    <th>Класс</th>
-                                    <th>Действие</th>
-                                </tr>
+                            <tr>
+                                <th>Класс</th>
+                                <th>Действие</th>
+                            </tr>
                             </thead>
                             <tbody>
 
-                            @foreach (var item in Model.GetSchoolClass())
+                            @foreach (var item in Model.FeedbackModel)
                             {
                                 if (item.Class != null)
                                 {

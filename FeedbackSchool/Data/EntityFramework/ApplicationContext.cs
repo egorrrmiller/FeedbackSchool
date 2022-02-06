@@ -10,18 +10,18 @@ public sealed class ApplicationContext : DbContext
         Database.EnsureCreated();
     }
 
-    public DbSet<FeedbackList> FeedbackList { get; set; }
-    public DbSet<FeedbackModel> FeedbackModel { get; set; }
+    public DbSet<FeedbackModel> FeedbackList { get; set; }
+    public DbSet<ManageModel> FeedbackModel { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite(Startup.Connection);
+        optionsBuilder.UseSqlServer(@"Server=localhost\MSSQLSERVER01;Database=FeedbackSchool;Trusted_Connection=True;");
         base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FeedbackModel>()
+        modelBuilder.Entity<ManageModel>()
             .Property(f => f.Id)
             .ValueGeneratedOnAdd();
 

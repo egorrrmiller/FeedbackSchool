@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace FeedbackSchool.Models;
+namespace FeedbackSchool.Services;
 
 public class RussianIdentityErrorDescriber : IdentityErrorDescriber
 {

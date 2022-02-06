@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
-using FeedbackSchool.Data;
 using FeedbackSchool.Data.EntityFramework;
 using FeedbackSchool.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +10,30 @@ namespace FeedbackSchool.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly IRepository<FeedbackList, FeedbackModel> _repository;
+    private readonly ApplicationContext _applicationContext;
 
-    public HomeController()
+    public HomeController(ApplicationContext applicationContext)
     {
-        _repository = new EfRepository();
+        _applicationContext = applicationContext;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Index(FeedbackList item)
+    public async Task<IActionResult> Index(FeedbackModel item)
     {
         if (ModelState.IsValid)
-            await _repository.AddFeedback(item);
+        {
+            _applicationContext.FeedbackList.Add(new FeedbackModel()
+            {
+                School = item.School,
+                Class = item.Class,
+                Name = item.Name,
+                Feedback = item.Feedback,
+                FavoriteLessons = item.FavoriteLessons ?? string.Empty,
+                DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture)
+            });
+
+            _applicationContext.SaveChanges();
+        }
         else
             return View();
 
@@ -33,7 +46,7 @@ public class HomeController : Controller
 
     [HttpGet]
     public IActionResult Feedback()
-        => View(_repository);
+        => View(_applicationContext);
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

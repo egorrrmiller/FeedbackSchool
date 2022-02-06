@@ -15,7 +15,7 @@ public class IdentityHostingStartup : IHostingStartup
         builder.ConfigureServices((context, services) =>
         {
             services.AddDbContext<FeedbackSchoolContext>(options =>
-                options.UseSqlite(
+                options.UseSqlServer(
                     context.Configuration.GetConnectionString("Connection")));
 
             services.AddDefaultIdentity<FeedbackSchoolUser>(options => options.SignIn.RequireConfirmedAccount = true)
