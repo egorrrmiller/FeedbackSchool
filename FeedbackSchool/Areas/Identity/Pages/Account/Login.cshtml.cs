@@ -39,10 +39,7 @@ public class LoginModel : PageModel
 
     public async Task OnGetAsync(string returnUrl = null)
     {
-        if (!string.IsNullOrEmpty(ErrorMessage))
-        {
-            ModelState.AddModelError(string.Empty, ErrorMessage);
-        }
+        if (!string.IsNullOrEmpty(ErrorMessage)) ModelState.AddModelError(string.Empty, ErrorMessage);
 
         returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -59,16 +56,13 @@ public class LoginModel : PageModel
         returnUrl = returnUrl ?? Url.Content("~/");
 
         if (ModelState.IsValid)
-        {
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-
-
             try
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password,
-                    Input.RememberMe, lockoutOnFailure: false);
+                    Input.RememberMe, false);
 
 
                 if (result.Succeeded)
@@ -78,10 +72,8 @@ public class LoginModel : PageModel
                 }
 
                 if (result.RequiresTwoFactor)
-                {
                     return RedirectToPage("./LoginWith2fa",
-                        new {ReturnUrl = returnUrl, RememberMe = Input.RememberMe});
-                }
+                        new {ReturnUrl = returnUrl, Input.RememberMe});
 
                 if (result.IsLockedOut)
                 {
@@ -100,7 +92,6 @@ public class LoginModel : PageModel
                 ModelState.AddModelError(string.Empty, "Неверная попытка входа в систему.");
                 return Page();
             }
-        }
 
         // If we got this far, something failed, redisplay form
         return Page();

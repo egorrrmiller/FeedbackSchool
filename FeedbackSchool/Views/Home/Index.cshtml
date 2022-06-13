@@ -1,19 +1,16 @@
-﻿@using FeedbackSchool.Data.EntityFramework
+﻿@inject ApplicationContext _context
+@using FeedbackSchool.Data
 @model FeedbackModel
 
 @{
-    var context = new ApplicationContext();
-
     var school = new List<SelectListItem>();
     var classes = new List<SelectListItem>();
 
-    foreach (var item in context.Manage)
+    foreach (var item in _context.Manage)
         if (item.School != null)
             school.Add(new SelectListItem {Text = item.School, Value = item.School});
         else
-            classes.Add(new SelectListItem() {Text = item.Class, Value = item.Class});
-
-    await context.DisposeAsync();
+            classes.Add(new SelectListItem {Text = item.Class, Value = item.Class});
 }
 
 <div class="panel-success">

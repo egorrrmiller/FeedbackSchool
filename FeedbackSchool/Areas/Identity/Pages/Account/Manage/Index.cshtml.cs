@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FeedbackSchool.Areas.Identity.Pages.Account.Manage;
 
-public partial class IndexModel : PageModel
+public class IndexModel : PageModel
 {
     private readonly SignInManager<FeedbackSchoolUser> _signInManager;
     private readonly UserManager<FeedbackSchoolUser> _userManager;
@@ -54,10 +54,7 @@ public partial class IndexModel : PageModel
     public async Task<IActionResult> OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
         await LoadAsync(user);
         return Page();
@@ -66,10 +63,7 @@ public partial class IndexModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
         /*if (!ModelState.IsValid)
         {

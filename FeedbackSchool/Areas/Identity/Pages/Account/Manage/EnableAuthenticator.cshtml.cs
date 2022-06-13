@@ -41,10 +41,7 @@ public class EnableAuthenticatorModel : PageModel
     public async Task<IActionResult> OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
         await LoadSharedKeyAndQrCodeUriAsync(user);
 
@@ -54,10 +51,7 @@ public class EnableAuthenticatorModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
         if (!ModelState.IsValid)
         {
@@ -90,10 +84,8 @@ public class EnableAuthenticatorModel : PageModel
             RecoveryCodes = recoveryCodes.ToArray();
             return RedirectToPage("./ShowRecoveryCodes");
         }
-        else
-        {
-            return RedirectToPage("./TwoFactorAuthentication");
-        }
+
+        return RedirectToPage("./TwoFactorAuthentication");
     }
 
     private async Task LoadSharedKeyAndQrCodeUriAsync(FeedbackSchoolUser user)
@@ -122,10 +114,7 @@ public class EnableAuthenticatorModel : PageModel
             currentPosition += 4;
         }
 
-        if (currentPosition < unformattedKey.Length)
-        {
-            result.Append(unformattedKey.Substring(currentPosition));
-        }
+        if (currentPosition < unformattedKey.Length) result.Append(unformattedKey.Substring(currentPosition));
 
         return result.ToString().ToLowerInvariant();
     }

@@ -1,4 +1,4 @@
-﻿@model FeedbackSchool.Data.EntityFramework.ApplicationContext
+﻿@model FeedbackSchool.Data.ApplicationContext
 
 <link href="~/css/table.css" rel="stylesheet"/>
 <div class="panel-success">
@@ -7,7 +7,7 @@
     </div>
     <div class="panel-body">
 
-        @using (Html.BeginForm("DownloadDb", "Manage"))
+        @using (Html.BeginForm("DownloadDb", "Manage", FormMethod.Get))
         {
             <button class="btn btn-primary" type="submit">Скачать БД</button>
         }

@@ -1,9 +1,11 @@
-using FeedbackSchool.Data.EntityFramework;
+using FeedbackSchool.Data;
+using FeedbackSchool.Middlewares;
 using FeedbackSchool.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,12 +15,9 @@ namespace FeedbackSchool;
 
 public class Startup
 {
-    public static string Connection;
-
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-        Connection = configuration["ConnectionStrings:Connection"];
     }
 
     public IConfiguration Configuration { get; }
@@ -26,14 +25,18 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<ApplicationContext>();
+        services.AddDbContext<ApplicationContext>(options =>
+            options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
+
         services.AddTransient<IdentityErrorDescriber, RussianIdentityErrorDescriber>();
         services.AddTransient<IEmailSender, SendMail>();
+
         services.AddSingleton<ILogger>(_ =>
             new LoggerConfiguration()
                 .WriteTo.Console()
                 .WriteTo.File("log.txt")
                 .CreateLogger());
+
         services.AddControllersWithViews();
     }
 
@@ -60,11 +63,14 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                "default",
+                "{controller=Home}/{action=Index}/{id?}");
+
             endpoints.MapRazorPages();
         });
     }

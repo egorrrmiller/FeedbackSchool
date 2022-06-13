@@ -10,8 +10,8 @@ namespace FeedbackSchool.Areas.Identity.Pages.Account.Manage;
 public class ResetAuthenticatorModel : PageModel
 {
     private readonly SignInManager<FeedbackSchoolUser> _signInManager;
-    ILogger<ResetAuthenticatorModel> _logger;
-    UserManager<FeedbackSchoolUser> _userManager;
+    private ILogger<ResetAuthenticatorModel> _logger;
+    private UserManager<FeedbackSchoolUser> _userManager;
 
     public ResetAuthenticatorModel(
         UserManager<FeedbackSchoolUser> userManager,
@@ -28,10 +28,7 @@ public class ResetAuthenticatorModel : PageModel
     public async Task<IActionResult> OnGet()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
         return Page();
     }
@@ -39,10 +36,7 @@ public class ResetAuthenticatorModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
         await _userManager.SetTwoFactorEnabledAsync(user, false);
         await _userManager.ResetAuthenticatorKeyAsync(user);

@@ -5,7 +5,7 @@
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
 }
 
-<partial name="_StatusMessage" for="StatusMessage" />
+<partial name="_StatusMessage" for="StatusMessage"/>
 <h4>@ViewData["Title"]</h4>
 @if (Model.Is2faEnabled)
 {
@@ -37,20 +37,25 @@
             <button type="submit" class="btn btn-primary m-1">Забыть этот браузер</button><br/>
         </form>
     }
-    <br/><a asp-page="./Disable2fa" class="btn btn-primary m-1">Отключить 2FA</a><br/>
-    <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary m-1">Сброс кодов восстановления</a><br/>
+    <br/>
+    <a asp-page="./Disable2fa" class="btn btn-primary m-1">Отключить 2FA</a>
+    <br/>
+    <a asp-page="./GenerateRecoveryCodes" class="btn btn-primary m-1">Сброс кодов восстановления</a>
+    <br/>
 }
 
 @if (!Model.HasAuthenticator)
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary m-1">Добавить аутентификатор</a><br/>
+    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary m-1">Добавить аутентификатор</a>
+    <br/>
 }
 else
 {
-    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary m-1">Настройка аутентификатора</a><br/>
+    <a id="enable-authenticator" asp-page="./EnableAuthenticator" class="btn btn-primary m-1">Настройка аутентификатора</a>
+    <br/>
     <a id="reset-authenticator" asp-page="./ResetAuthenticator" class="btn btn-primary m-1">Сбросить аутентификатор</a>
 }
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

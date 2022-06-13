@@ -31,10 +31,7 @@ public class LoginWithRecoveryCodeModel : PageModel
     {
         // Ensure the user has gone through the username & password screen first
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-        if (user == null)
-        {
-            throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-        }
+        if (user == null) throw new InvalidOperationException("Unable to load two-factor authentication user.");
 
         ReturnUrl = returnUrl;
 
@@ -43,16 +40,10 @@ public class LoginWithRecoveryCodeModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string returnUrl = null)
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
+        if (!ModelState.IsValid) return Page();
 
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-        if (user == null)
-        {
-            throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-        }
+        if (user == null) throw new InvalidOperationException("Unable to load two-factor authentication user.");
 
         var recoveryCode = Input.RecoveryCode.Replace(" ", string.Empty);
 
@@ -69,12 +60,10 @@ public class LoginWithRecoveryCodeModel : PageModel
             _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
             return RedirectToPage("./Lockout");
         }
-        else
-        {
-            _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", user.Id);
-            ModelState.AddModelError(string.Empty, "Введен неверный код восстановления.");
-            return Page();
-        }
+
+        _logger.LogWarning("Invalid recovery code entered for user with ID '{UserId}' ", user.Id);
+        ModelState.AddModelError(string.Empty, "Введен неверный код восстановления.");
+        return Page();
     }
 
     public class InputModel

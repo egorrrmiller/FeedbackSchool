@@ -9,19 +9,19 @@
 
 <div class="row">
     <div class="col-md-6">
-            <p>Ваша учетная запись содержит персональные данные, которые Вы нам предоставили. Эта страница позволяет вам загрузить или удалить эти данные.</p>
-            <p>
-                <strong>Удаление этих данных приведет к необратимому удалению вашей учетной записи, и это не может быть восстановлено.</strong>
-            </p>
-            <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
-                <button class="btn btn-primary" type="submit">Загрузить</button>
-            </form>
-            <p>
-                <a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">Удалить</a>
-            </p>
-        </div>
+        <p>Ваша учетная запись содержит персональные данные, которые Вы нам предоставили. Эта страница позволяет вам загрузить или удалить эти данные.</p>
+        <p>
+            <strong>Удаление этих данных приведет к необратимому удалению вашей учетной записи, и это не может быть восстановлено.</strong>
+        </p>
+        <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
+            <button class="btn btn-primary" type="submit">Загрузить</button>
+        </form>
+        <p>
+            <a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">Удалить</a>
+        </p>
+    </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

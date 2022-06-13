@@ -50,7 +50,7 @@ public class ExternalLoginModel : PageModel
     public IActionResult OnPost(string provider, string returnUrl = null)
     {
         // Request a redirect to the external login provider.
-        var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new {returnUrl});
+        var redirectUrl = Url.Page("./ExternalLogin", "Callback", new {returnUrl});
         var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
         return new ChallengeResult(provider, properties);
     }
@@ -73,7 +73,7 @@ public class ExternalLoginModel : PageModel
 
         // Sign in the user with this external login provider if the user already has a login.
         var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey,
-            isPersistent: false, bypassTwoFactor: true);
+            false, true);
         if (result.Succeeded)
         {
             _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name,
@@ -85,21 +85,17 @@ public class ExternalLoginModel : PageModel
         {
             return RedirectToPage("./Lockout");
         }
-        else
-        {
-            // If the user does not have an account, then ask the user to create an account.
-            ReturnUrl = returnUrl;
-            ProviderDisplayName = info.ProviderDisplayName;
-            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-            {
-                Input = new InputModel
-                {
-                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                };
-            }
 
-            return Page();
-        }
+        // If the user does not have an account, then ask the user to create an account.
+        ReturnUrl = returnUrl;
+        ProviderDisplayName = info.ProviderDisplayName;
+        if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            Input = new InputModel
+            {
+                Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+            };
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
@@ -130,29 +126,24 @@ public class ExternalLoginModel : PageModel
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new {area = "Identity", userId = userId, code = code},
-                        protocol: Request.Scheme);
+                        null,
+                        new {area = "Identity", userId, code},
+                        Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Подтверждение почты",
                         $"Чтобы подтвердить ваш аккаунт, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите здесь</a>.");
 
                     // If account confirmation is required, we need to show the link if we don't have a real email sender
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("./RegisterConfirmation", new {Email = Input.Email});
-                    }
+                        return RedirectToPage("./RegisterConfirmation", new {Input.Email});
 
-                    await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                    await _signInManager.SignInAsync(user, false, info.LoginProvider);
 
                     return LocalRedirect(returnUrl);
                 }
             }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
         }
 
         ProviderDisplayName = info.ProviderDisplayName;

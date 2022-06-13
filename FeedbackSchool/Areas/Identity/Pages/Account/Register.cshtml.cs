@@ -64,28 +64,23 @@ public class RegisterModel : PageModel
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new {area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl},
-                    protocol: Request.Scheme);
+                    null,
+                    new {area = "Identity", userId = user.Id, code, returnUrl},
+                    Request.Scheme);
 
                 /*await _emailSender.SendEmailAsync(Input.Email, "Подтверждение почты",
                     $"Чтобы подтвердить ваш аккаунт, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>нажмите здесь</a>.");*/
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    return RedirectToPage("RegisterConfirmation", new {email = Input.Email, returnUrl = returnUrl});
+                    return RedirectToPage("RegisterConfirmation", new {email = Input.Email, returnUrl});
                 }
-                else
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
-                }
+
+                await _signInManager.SignInAsync(user, false);
+                return LocalRedirect(returnUrl);
             }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
         }
 
         // If we got this far, something failed, redisplay form

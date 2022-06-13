@@ -33,10 +33,7 @@ public class LoginWith2faModel : PageModel
         // Ensure the user has gone through the username & password screen first
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
-        if (user == null)
-        {
-            throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-        }
+        if (user == null) throw new InvalidOperationException("Unable to load two-factor authentication user.");
 
         ReturnUrl = returnUrl;
         RememberMe = rememberMe;
@@ -46,18 +43,12 @@ public class LoginWith2faModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(bool rememberMe, string returnUrl = null)
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
+        if (!ModelState.IsValid) return Page();
 
         returnUrl = returnUrl ?? Url.Content("~/");
 
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-        if (user == null)
-        {
-            throw new InvalidOperationException($"Unable to load two-factor authentication user.");
-        }
+        if (user == null) throw new InvalidOperationException("Unable to load two-factor authentication user.");
 
         var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
@@ -70,17 +61,16 @@ public class LoginWith2faModel : PageModel
             _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
             return LocalRedirect(returnUrl);
         }
-        else if (result.IsLockedOut)
+
+        if (result.IsLockedOut)
         {
             _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
             return RedirectToPage("./Lockout");
         }
-        else
-        {
-            _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
-            ModelState.AddModelError(string.Empty, "Неверный код аутентификатора.");
-            return Page();
-        }
+
+        _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
+        ModelState.AddModelError(string.Empty, "Неверный код аутентификатора.");
+        return Page();
     }
 
     public class InputModel

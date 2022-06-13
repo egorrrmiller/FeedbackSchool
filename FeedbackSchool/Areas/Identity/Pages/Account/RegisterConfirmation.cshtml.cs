@@ -30,16 +30,10 @@ public class RegisterConfirmationModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
     {
-        if (email == null)
-        {
-            return RedirectToPage("/Index");
-        }
+        if (email == null) return RedirectToPage("/Index");
 
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null)
-        {
-            return NotFound($"Unable to load user with email '{email}'.");
-        }
+        if (user == null) return NotFound($"Unable to load user with email '{email}'.");
 
         Email = email;
         // Once you add a real email sender, you should remove this code that lets you confirm the account
@@ -51,9 +45,9 @@ public class RegisterConfirmationModel : PageModel
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             EmailConfirmationUrl = Url.Page(
                 "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new {area = "Identity", userId = userId, code = code, returnUrl = returnUrl},
-                protocol: Request.Scheme);
+                null,
+                new {area = "Identity", userId, code, returnUrl},
+                Request.Scheme);
         }
 
         return Page();
