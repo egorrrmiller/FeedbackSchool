@@ -11,15 +11,19 @@ public class SendMail : IEmailSender
     {
         // отправитель - устанавливаем адрес и отображаемое в письме имя
         var from = new MailAddress("descomproject2020@gmail.com", "Администрация");
+
         // кому отправляем
         var to = new MailAddress(email);
+
         // создаем объект сообщения
         var m = new MailMessage(from, to)
         {
             // тема письма
             Subject = subject,
+
             // текст письма
             Body = htmlMessage,
+
             // письмо представляет код html
             IsBodyHtml = true
         };
@@ -30,6 +34,7 @@ public class SendMail : IEmailSender
             Credentials = new NetworkCredential("login", "pass"),
             EnableSsl = true
         };
+
         // логин и пароль
         smtp.Send(m);
 

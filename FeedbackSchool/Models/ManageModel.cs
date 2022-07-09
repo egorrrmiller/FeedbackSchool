@@ -6,9 +6,11 @@ namespace FeedbackSchool.Models;
 
 public class ManageModel
 {
-    [AllowNull] public string School { get; set; }
+    [AllowNull]
+    public string School { get; set; }
 
-    [AllowNull] public string Class { get; set; }
+    [AllowNull]
+    public string Class { get; set; }
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FeedbackSchool.Data;
 using FeedbackSchool.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FeedbackSchool.Controllers;
 
@@ -20,19 +21,14 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(FeedbackModel item)
     {
-        if (!ModelState.IsValid) return View();
-
-
-        _applicationContext.Feedback.Add(new FeedbackModel
+        if (!ModelState.IsValid)
         {
-            School = item.School,
-            Class = item.Class,
-            Name = item.Name,
-            Feedback = item.Feedback,
-            FavoriteLessons = item.FavoriteLessons ?? string.Empty,
-            DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture)
-        });
+            return View();
+        }
 
+        item.DateTime = DateTime.Now.ToString(CultureInfo.CurrentCulture);
+
+        _applicationContext.Feedback.Add(item);
         await _applicationContext.SaveChangesAsync();
 
         return View("Okay", item);
@@ -45,15 +41,17 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    public IActionResult Feedback()
+    public async Task<ViewResult> Feedback()
     {
-        return View(_applicationContext);
+        return View(await _applicationContext.Feedback.ToListAsync());
     }
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+        return View(new ErrorViewModel
+        {
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        });
     }
 }

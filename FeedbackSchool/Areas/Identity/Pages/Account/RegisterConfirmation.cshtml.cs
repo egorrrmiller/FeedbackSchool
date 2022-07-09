@@ -14,6 +14,7 @@ namespace FeedbackSchool.Areas.Identity.Pages.Account;
 public class RegisterConfirmationModel : PageModel
 {
     private readonly IEmailSender _sender;
+
     private readonly UserManager<FeedbackSchoolUser> _userManager;
 
     public RegisterConfirmationModel(UserManager<FeedbackSchoolUser> userManager, IEmailSender sender)
@@ -30,23 +31,38 @@ public class RegisterConfirmationModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
     {
-        if (email == null) return RedirectToPage("/Index");
+        if (email == null)
+        {
+            return RedirectToPage("/Index");
+        }
 
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null) return NotFound($"Unable to load user with email '{email}'.");
+
+        if (user == null)
+        {
+            return NotFound($"Unable to load user with email '{email}'.");
+        }
 
         Email = email;
+
         // Once you add a real email sender, you should remove this code that lets you confirm the account
         DisplayConfirmAccountLink = true;
+
         if (DisplayConfirmAccountLink)
         {
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            EmailConfirmationUrl = Url.Page(
-                "/Account/ConfirmEmail",
+
+            EmailConfirmationUrl = Url.Page("/Account/ConfirmEmail",
                 null,
-                new {area = "Identity", userId, code, returnUrl},
+                new
+                {
+                    area = "Identity",
+                    userId,
+                    code,
+                    returnUrl
+                },
                 Request.Scheme);
         }
 

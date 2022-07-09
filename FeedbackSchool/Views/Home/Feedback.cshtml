@@ -1,4 +1,4 @@
-﻿@model FeedbackSchool.Data.ApplicationContext
+﻿@model List<FeedbackModel>
 
 <link href="~/css/table.css" rel="stylesheet"/>
 <div class="panel-success">
@@ -26,7 +26,7 @@
             </thead>
             <tbody>
             @{
-                foreach (var item in Model.Feedback)
+                foreach (var item in Model)
                 {
                     <tr>
                         <td data-label="Школа"> @item.School</td>

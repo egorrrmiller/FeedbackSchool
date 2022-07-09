@@ -19,15 +19,17 @@ namespace FeedbackSchool.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly IEmailSender _emailSender;
+
     private readonly ILogger<RegisterModel> _logger;
+
     private readonly SignInManager<FeedbackSchoolUser> _signInManager;
+
     private readonly UserManager<FeedbackSchoolUser> _userManager;
 
-    public RegisterModel(
-        UserManager<FeedbackSchoolUser> userManager,
-        SignInManager<FeedbackSchoolUser> signInManager,
-        ILogger<RegisterModel> logger,
-        IEmailSender emailSender)
+    public RegisterModel(UserManager<FeedbackSchoolUser> userManager,
+                         SignInManager<FeedbackSchoolUser> signInManager,
+                         ILogger<RegisterModel> logger,
+                         IEmailSender emailSender)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -35,7 +37,8 @@ public class RegisterModel : PageModel
         _emailSender = emailSender;
     }
 
-    [BindProperty] public InputModel Input { get; set; }
+    [BindProperty]
+    public InputModel Input { get; set; }
 
     public string ReturnUrl { get; set; }
 
@@ -51,9 +54,15 @@ public class RegisterModel : PageModel
     {
         returnUrl ??= Url.Content("~/");
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
         if (ModelState.IsValid)
         {
-            var user = new FeedbackSchoolUser {UserName = Input.Email, Email = Input.Email};
+            var user = new FeedbackSchoolUser
+            {
+                UserName = Input.Email,
+                Email = Input.Email
+            };
+
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
@@ -62,10 +71,16 @@ public class RegisterModel : PageModel
 
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmail",
+
+                var callbackUrl = Url.Page("/Account/ConfirmEmail",
                     null,
-                    new {area = "Identity", userId = user.Id, code, returnUrl},
+                    new
+                    {
+                        area = "Identity",
+                        userId = user.Id,
+                        code,
+                        returnUrl
+                    },
                     Request.Scheme);
 
                 /*await _emailSender.SendEmailAsync(Input.Email, "Подтверждение почты",
@@ -73,14 +88,23 @@ public class RegisterModel : PageModel
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    return RedirectToPage("RegisterConfirmation", new {email = Input.Email, returnUrl});
+                    return RedirectToPage("RegisterConfirmation",
+                        new
+                        {
+                            email = Input.Email,
+                            returnUrl
+                        });
                 }
 
                 await _signInManager.SignInAsync(user, false);
+
                 return LocalRedirect(returnUrl);
             }
 
-            foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
         // If we got this far, something failed, redisplay form
@@ -95,7 +119,8 @@ public class RegisterModel : PageModel
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Длина пароля должна быть не менее {2} и не более {1} символов.",
+        [StringLength(100,
+            ErrorMessage = "Длина пароля должна быть не менее {2} и не более {1} символов.",
             MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]

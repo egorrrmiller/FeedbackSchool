@@ -17,12 +17,15 @@ namespace FeedbackSchool.Controllers;
 public sealed class ManageController : Controller
 {
     private readonly ApplicationContext _applicationContext;
+
     private readonly ILogger _logger;
+
     private readonly RedirectToActionResult _redirectToAction;
+
     private readonly UserManager<FeedbackSchoolUser> _userManager;
 
     public ManageController(UserManager<FeedbackSchoolUser> userManager, ILogger logger,
-        ApplicationContext applicationContext)
+                            ApplicationContext applicationContext)
     {
         _applicationContext = applicationContext;
         _logger = logger;
@@ -43,12 +46,18 @@ public sealed class ManageController : Controller
         // потом мб придумаю что-то лучше
 
         var count = 0;
+
         if (ModelState.IsValid)
+        {
             try
             {
                 foreach (var feedbackNumber in feedbacks.Split(','))
                 {
-                    _applicationContext.Feedback.Remove(new FeedbackModel {Id = int.Parse(feedbackNumber)});
+                    _applicationContext.Feedback.Remove(new FeedbackModel
+                    {
+                        Id = int.Parse(feedbackNumber)
+                    });
+
                     await _applicationContext.SaveChangesAsync();
                     count++;
                 }
@@ -57,13 +66,16 @@ public sealed class ManageController : Controller
             {
                 ModelState.AddModelError("FormatException", "Проверьте правильность введенных данных!");
                 ModelState.AddModelError("FormatException", $"До ошибки было удалено {count} отзыв(-ов)");
+
                 return View(_applicationContext.Manage.ToList());
             }
             finally
             {
-                _logger.Information("Пользователь {UserName} удалил {Count} отзыв(-ов)", _userManager.GetUserName(User),
+                _logger.Information("Пользователь {UserName} удалил {Count} отзыв(-ов)",
+                    _userManager.GetUserName(User),
                     count);
             }
+        }
 
         return View(_applicationContext.Manage.ToList());
     }
@@ -80,15 +92,17 @@ public sealed class ManageController : Controller
             "DataBase.json"));
     }
 
-    #region Trash.... Выглядит как говно если честно...
+#region Trash.... Выглядит как говно если честно...
 
     public async Task<IActionResult> DeleteAllFeedbacks()
     {
         foreach (var guest in _applicationContext.Feedback)
+        {
             _applicationContext.Feedback.Remove(new FeedbackModel
             {
                 Id = guest.Id
             });
+        }
 
         await _applicationContext.SaveChangesAsync();
 
@@ -106,7 +120,8 @@ public sealed class ManageController : Controller
 
         await _applicationContext.SaveChangesAsync();
 
-        _logger.Information("Пользователь {UserName} добавил школу {School}", _userManager.GetUserName(User),
+        _logger.Information("Пользователь {UserName} добавил школу {School}",
+            _userManager.GetUserName(User),
             addSchool);
 
         return _redirectToAction;
@@ -132,11 +147,16 @@ public sealed class ManageController : Controller
         var classes = _applicationContext.Manage.FirstOrDefault(f => f.Id == id)?.Class;
 
         if (school != null)
-            _logger.Information("Пользователь {UserName} удалил школу {School}", _userManager.GetUserName(User),
+        {
+            _logger.Information("Пользователь {UserName} удалил школу {School}",
+                _userManager.GetUserName(User),
                 school);
-        else
-            _logger.Information("Пользователь {UserName} удалил {Class} класс", _userManager.GetUserName(User),
+        } else
+        {
+            _logger.Information("Пользователь {UserName} удалил {Class} класс",
+                _userManager.GetUserName(User),
                 classes);
+        }
 
         _applicationContext.Manage.Remove(new ManageModel
         {
@@ -148,5 +168,5 @@ public sealed class ManageController : Controller
         return _redirectToAction;
     }
 
-    #endregion
+#endregion
 }

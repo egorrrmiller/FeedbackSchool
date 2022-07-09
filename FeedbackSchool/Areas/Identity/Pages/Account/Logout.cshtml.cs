@@ -12,6 +12,7 @@ namespace FeedbackSchool.Areas.Identity.Pages.Account;
 public class LogoutModel : PageModel
 {
     private readonly ILogger<LogoutModel> _logger;
+
     private readonly SignInManager<FeedbackSchoolUser> _signInManager;
 
     public LogoutModel(SignInManager<FeedbackSchoolUser> signInManager, ILogger<LogoutModel> logger)
@@ -28,8 +29,12 @@ public class LogoutModel : PageModel
     {
         await _signInManager.SignOutAsync();
         _logger.LogInformation("User logged out.");
+
         if (returnUrl != null)
+        {
             return LocalRedirect(returnUrl);
+        }
+
         return RedirectToPage();
     }
 }

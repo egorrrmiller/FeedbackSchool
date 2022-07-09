@@ -20,7 +20,8 @@ public class ResetPasswordModel : PageModel
         _userManager = userManager;
     }
 
-    [BindProperty] public InputModel Input { get; set; }
+    [BindProperty]
+    public InputModel Input { get; set; }
 
     public IActionResult OnGet(string code = null)
     {
@@ -33,22 +34,37 @@ public class ResetPasswordModel : PageModel
         {
             Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
         };
+
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid) return Page();
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
 
         var user = await _userManager.FindByEmailAsync(Input.Email);
+
         if (user == null)
+
             // Don't reveal that the user does not exist
+        {
             return RedirectToPage("./ResetPasswordConfirmation");
+        }
 
         var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
-        if (result.Succeeded) return RedirectToPage("./ResetPasswordConfirmation");
 
-        foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+        if (result.Succeeded)
+        {
+            return RedirectToPage("./ResetPasswordConfirmation");
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
 
         return Page();
     }
@@ -61,7 +77,8 @@ public class ResetPasswordModel : PageModel
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Длина пароля должна быть не менее {2} и не более {1} символов.",
+        [StringLength(100,
+            ErrorMessage = "Длина пароля должна быть не менее {2} и не более {1} символов.",
             MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]

@@ -10,5 +10,6 @@ public sealed class ApplicationContext : DbContext
     }
 
     public DbSet<FeedbackModel> Feedback { get; set; }
+
     public DbSet<ManageModel> Manage { get; set; }
 }

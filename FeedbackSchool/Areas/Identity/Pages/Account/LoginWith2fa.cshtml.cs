@@ -14,6 +14,7 @@ namespace FeedbackSchool.Areas.Identity.Pages.Account;
 public class LoginWith2faModel : PageModel
 {
     private readonly ILogger<LoginWith2faModel> _logger;
+
     private readonly SignInManager<FeedbackSchoolUser> _signInManager;
 
     public LoginWith2faModel(SignInManager<FeedbackSchoolUser> signInManager, ILogger<LoginWith2faModel> logger)
@@ -22,7 +23,8 @@ public class LoginWith2faModel : PageModel
         _logger = logger;
     }
 
-    [BindProperty] public InputModel Input { get; set; }
+    [BindProperty]
+    public InputModel Input { get; set; }
 
     public bool RememberMe { get; set; }
 
@@ -33,7 +35,10 @@ public class LoginWith2faModel : PageModel
         // Ensure the user has gone through the username & password screen first
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
-        if (user == null) throw new InvalidOperationException("Unable to load two-factor authentication user.");
+        if (user == null)
+        {
+            throw new InvalidOperationException("Unable to load two-factor authentication user.");
+        }
 
         ReturnUrl = returnUrl;
         RememberMe = rememberMe;
@@ -43,45 +48,58 @@ public class LoginWith2faModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(bool rememberMe, string returnUrl = null)
     {
-        if (!ModelState.IsValid) return Page();
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
 
         returnUrl = returnUrl ?? Url.Content("~/");
 
         var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-        if (user == null) throw new InvalidOperationException("Unable to load two-factor authentication user.");
+
+        if (user == null)
+        {
+            throw new InvalidOperationException("Unable to load two-factor authentication user.");
+        }
 
         var authenticatorCode = Input.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
         var result =
-            await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, rememberMe,
+            await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode,
+                rememberMe,
                 Input.RememberMachine);
 
         if (result.Succeeded)
         {
             _logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", user.Id);
+
             return LocalRedirect(returnUrl);
         }
 
         if (result.IsLockedOut)
         {
             _logger.LogWarning("User with ID '{UserId}' account locked out.", user.Id);
+
             return RedirectToPage("./Lockout");
         }
 
         _logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", user.Id);
         ModelState.AddModelError(string.Empty, "Неверный код аутентификатора.");
+
         return Page();
     }
 
     public class InputModel
     {
         [Required]
-        [StringLength(7, ErrorMessage = "Длина кода аутентификатора должна быть не менее {2} и не более {1} символов.",
+        [StringLength(7,
+            ErrorMessage = "Длина кода аутентификатора должна быть не менее {2} и не более {1} символов.",
             MinimumLength = 6)]
         [DataType(DataType.Text)]
         [Display(Name = "Код аутенификатора")]
         public string TwoFactorCode { get; set; }
 
-        [Display(Name = "Запомнить браузер")] public bool RememberMachine { get; set; }
+        [Display(Name = "Запомнить браузер")]
+        public bool RememberMachine { get; set; }
     }
 }

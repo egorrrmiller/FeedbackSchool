@@ -10,6 +10,7 @@ namespace FeedbackSchool.Middlewares;
 public class ErrorHandlingMiddleware
 {
     private readonly ILogger<ErrorHandlingMiddleware> _logger;
+
     private readonly RequestDelegate _requestDelegate;
 
     public ErrorHandlingMiddleware(RequestDelegate requestDelegate, ILogger<ErrorHandlingMiddleware> logger)
@@ -26,13 +27,15 @@ public class ErrorHandlingMiddleware
         }
         catch (Exception e)
         {
-            await HandleExceptionAsync(context, e.Message, HttpStatusCode.InternalServerError,
+            await HandleExceptionAsync(context,
+                e.Message,
+                HttpStatusCode.InternalServerError,
                 "Произошла неизвестная ошибка. \nИнформация о ней уже была отправлена разработчикам");
         }
     }
 
     private async Task HandleExceptionAsync(HttpContext context, string exMsg, HttpStatusCode httpStatusCode,
-        string message)
+                                            string message)
     {
         _logger.LogError(exMsg);
 

@@ -14,14 +14,16 @@ namespace FeedbackSchool.Areas.Identity.Pages.Account.Manage;
 public class EnableAuthenticatorModel : PageModel
 {
     private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+
     private readonly ILogger<EnableAuthenticatorModel> _logger;
+
     private readonly UrlEncoder _urlEncoder;
+
     private readonly UserManager<FeedbackSchoolUser> _userManager;
 
-    public EnableAuthenticatorModel(
-        UserManager<FeedbackSchoolUser> userManager,
-        ILogger<EnableAuthenticatorModel> logger,
-        UrlEncoder urlEncoder)
+    public EnableAuthenticatorModel(UserManager<FeedbackSchoolUser> userManager,
+                                    ILogger<EnableAuthenticatorModel> logger,
+                                    UrlEncoder urlEncoder)
     {
         _userManager = userManager;
         _logger = logger;
@@ -32,16 +34,23 @@ public class EnableAuthenticatorModel : PageModel
 
     public string AuthenticatorUri { get; set; }
 
-    [TempData] public string[] RecoveryCodes { get; set; }
+    [TempData]
+    public string[] RecoveryCodes { get; set; }
 
-    [TempData] public string StatusMessage { get; set; }
+    [TempData]
+    public string StatusMessage { get; set; }
 
-    [BindProperty] public InputModel Input { get; set; }
+    [BindProperty]
+    public InputModel Input { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+
+        if (user == null)
+        {
+            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+        }
 
         await LoadSharedKeyAndQrCodeUriAsync(user);
 
@@ -51,11 +60,16 @@ public class EnableAuthenticatorModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         var user = await _userManager.GetUserAsync(User);
-        if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+
+        if (user == null)
+        {
+            return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+        }
 
         if (!ModelState.IsValid)
         {
             await LoadSharedKeyAndQrCodeUriAsync(user);
+
             return Page();
         }
 
@@ -63,12 +77,15 @@ public class EnableAuthenticatorModel : PageModel
         var verificationCode = Input.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
 
         var is2faTokenValid = await _userManager.VerifyTwoFactorTokenAsync(
-            user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+            user,
+            _userManager.Options.Tokens.AuthenticatorTokenProvider,
+            verificationCode);
 
         if (!is2faTokenValid)
         {
             ModelState.AddModelError("Input.Code", "Verification code is invalid.");
             await LoadSharedKeyAndQrCodeUriAsync(user);
+
             return Page();
         }
 
@@ -82,6 +99,7 @@ public class EnableAuthenticatorModel : PageModel
         {
             var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
             RecoveryCodes = recoveryCodes.ToArray();
+
             return RedirectToPage("./ShowRecoveryCodes");
         }
 
@@ -92,6 +110,7 @@ public class EnableAuthenticatorModel : PageModel
     {
         // Load the authenticator key & QR code URI to display on the form
         var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+
         if (string.IsNullOrEmpty(unformattedKey))
         {
             await _userManager.ResetAuthenticatorKeyAsync(user);
@@ -108,21 +127,24 @@ public class EnableAuthenticatorModel : PageModel
     {
         var result = new StringBuilder();
         var currentPosition = 0;
+
         while (currentPosition + 4 < unformattedKey.Length)
         {
             result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
             currentPosition += 4;
         }
 
-        if (currentPosition < unformattedKey.Length) result.Append(unformattedKey.Substring(currentPosition));
+        if (currentPosition < unformattedKey.Length)
+        {
+            result.Append(unformattedKey.Substring(currentPosition));
+        }
 
         return result.ToString().ToLowerInvariant();
     }
 
     private string GenerateQrCodeUri(string email, string unformattedKey)
     {
-        return string.Format(
-            AuthenticatorUriFormat,
+        return string.Format(AuthenticatorUriFormat,
             _urlEncoder.Encode("Project"),
             _urlEncoder.Encode(email),
             unformattedKey);
@@ -131,7 +153,8 @@ public class EnableAuthenticatorModel : PageModel
     public class InputModel
     {
         [Required]
-        [StringLength(7, ErrorMessage = "Длина кода подтверждения должна быть не менее {2} и не более {1} символов.",
+        [StringLength(7,
+            ErrorMessage = "Длина кода подтверждения должна быть не менее {2} и не более {1} символов.",
             MinimumLength = 6)]
         [DataType(DataType.Text)]
         [Display(Name = "Код подтверждения")]
