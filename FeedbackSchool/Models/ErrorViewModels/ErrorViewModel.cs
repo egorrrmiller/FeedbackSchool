@@ -1,4 +1,4 @@
-namespace FeedbackSchool.Models;
+namespace FeedbackSchool.Models.ErrorViewModels;
 
 public class ErrorViewModel
 {

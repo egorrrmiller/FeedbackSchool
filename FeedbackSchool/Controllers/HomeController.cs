@@ -2,20 +2,33 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
+using FeedbackSchool.Areas.Identity.Data;
 using FeedbackSchool.Data;
-using FeedbackSchool.Models;
+using FeedbackSchool.Models.ErrorViewModels;
+using FeedbackSchool.Models.FeedbackViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace FeedbackSchool.Controllers;
 
-public class HomeController : Controller
+public sealed class HomeController : Controller
 {
     private readonly ApplicationContext _applicationContext;
 
-    public HomeController(ApplicationContext applicationContext)
+    private readonly ILogger _logger;
+
+    private readonly RedirectToActionResult _redirectToActionFeedback;
+
+    private readonly UserManager<FeedbackSchoolUser> _userManager;
+
+    public HomeController(ApplicationContext applicationContext, UserManager<FeedbackSchoolUser> userManager, ILogger logger)
     {
         _applicationContext = applicationContext;
+        _userManager = userManager;
+        _logger = logger;
+        _redirectToActionFeedback = RedirectToAction(nameof(Feedback));
     }
 
     [HttpPost]
@@ -44,6 +57,27 @@ public class HomeController : Controller
     public async Task<ViewResult> Feedback()
     {
         return View(await _applicationContext.Feedback.ToListAsync());
+    }
+
+    [HttpGet("feedback/delete/{feedbackId:int}")]
+    public async Task<IActionResult> DeleteFeedback(int feedbackId)
+    {
+        var feedback = await _applicationContext.Feedback.FindAsync(feedbackId);
+
+        if (feedback == null)
+        {
+            return _redirectToActionFeedback;
+        }
+
+        _applicationContext.Feedback.Remove(feedback);
+
+        await _applicationContext.SaveChangesAsync();
+
+        _logger.Information("Пользователь {UserName} удалил отзыв с id {feedbackId}",
+            _userManager.GetUserName(User),
+            feedbackId);
+
+        return _redirectToActionFeedback;
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

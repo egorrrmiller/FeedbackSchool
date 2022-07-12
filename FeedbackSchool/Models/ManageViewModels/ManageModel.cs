@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace FeedbackSchool.Models;
+namespace FeedbackSchool.Models.ManageViewModels;
 
 public class ManageModel
 {

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FeedbackSchool.Areas.Identity.Data;
 using FeedbackSchool.Data;
-using FeedbackSchool.Models;
+using FeedbackSchool.Models.FeedbackViewModels;
+using FeedbackSchool.Models.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -40,48 +40,8 @@ public sealed class ManageController : Controller
         return View(_applicationContext.Manage.ToList());
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Index(string feedbacks)
-    {
-        // потом мб придумаю что-то лучше
-
-        var count = 0;
-
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                foreach (var feedbackNumber in feedbacks.Split(','))
-                {
-                    _applicationContext.Feedback.Remove(new FeedbackModel
-                    {
-                        Id = int.Parse(feedbackNumber)
-                    });
-
-                    await _applicationContext.SaveChangesAsync();
-                    count++;
-                }
-            }
-            catch (FormatException)
-            {
-                ModelState.AddModelError("FormatException", "Проверьте правильность введенных данных!");
-                ModelState.AddModelError("FormatException", $"До ошибки было удалено {count} отзыв(-ов)");
-
-                return View(_applicationContext.Manage.ToList());
-            }
-            finally
-            {
-                _logger.Information("Пользователь {UserName} удалил {Count} отзыв(-ов)",
-                    _userManager.GetUserName(User),
-                    count);
-            }
-        }
-
-        return View(_applicationContext.Manage.ToList());
-    }
-
     [Authorize]
-    [HttpGet("/downloaddb")]
+    [Route("feedback/downloadAll")]
     public Task<ActionResult> DownloadDb()
     {
         _logger.Information("Пользователь {UserName} скачал базу даных", _userManager.GetUserName(User));
@@ -94,16 +54,10 @@ public sealed class ManageController : Controller
 
 #region Trash.... Выглядит как говно если честно...
 
+    [Route("feedback/deleteAll")]
     public async Task<IActionResult> DeleteAllFeedbacks()
     {
-        foreach (var guest in _applicationContext.Feedback)
-        {
-            _applicationContext.Feedback.Remove(new FeedbackModel
-            {
-                Id = guest.Id
-            });
-        }
-
+        _applicationContext.Feedback.RemoveRange(_applicationContext.Feedback);
         await _applicationContext.SaveChangesAsync();
 
         _logger.Information("Пользователь {UserName} удалил все отзывы", _userManager.GetUserName(User));

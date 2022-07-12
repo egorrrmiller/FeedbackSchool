@@ -1,4 +1,4 @@
-﻿@model List<FeedbackModel>
+﻿@model List<FeedbackSchool.Models.FeedbackViewModels.FeedbackModel>
 
 <link href="~/css/table.css" rel="stylesheet"/>
 <div class="panel-success">
@@ -7,10 +7,7 @@
     </div>
     <div class="panel-body">
 
-        @using (Html.BeginForm("DownloadDb", "Manage", FormMethod.Get))
-        {
-            <button class="btn btn-primary" type="submit">Скачать БД</button>
-        }
+        <a asp-action="DownloadDb" asp-controller="Manage" class="btn btn-primary">Скачать БД</a>
 
         <table class="container">
             <thead>
@@ -22,6 +19,7 @@
                 <th>Любимые уроки</th>
                 <th>Время отправки</th>
                 <th>Номер отзыва</th>
+                <th>Действие</th>
             </tr>
             </thead>
             <tbody>
@@ -45,6 +43,9 @@
 
                         <td data-label="Время отправки">@item.DateTime</td>
                         <td data-label="Номер отзыва"> @item.Id</td>
+                        <td data-label="Действие">
+                            <a asp-action="DeleteFeedback" asp-controller="Home" asp-route-feedbackId="@item.Id">Удалить</a>
+                        </td>
                     </tr>
                 }
             }

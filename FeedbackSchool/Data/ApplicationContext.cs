@@ -1,4 +1,5 @@
-﻿using FeedbackSchool.Models;
+﻿using FeedbackSchool.Models.FeedbackViewModels;
+using FeedbackSchool.Models.ManageViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace FeedbackSchool.Data;
