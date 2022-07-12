@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace FeedbackSchool.Services;
 
-public class SendMail : IEmailSender
+public class SendMailService : IEmailSender
 {
     public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {

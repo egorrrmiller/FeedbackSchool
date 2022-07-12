@@ -1,3 +1,4 @@
+using FeedbackSchool.Areas.Identity.Data;
 using FeedbackSchool.Data;
 using FeedbackSchool.Middlewares;
 using FeedbackSchool.Services;
@@ -29,7 +30,7 @@ public class Startup
             options.UseSqlite(Configuration.GetConnectionString("Sqlite")));
 
         services.AddTransient<IdentityErrorDescriber, RussianIdentityErrorDescriber>();
-        services.AddTransient<IEmailSender, SendMail>();
+        services.AddTransient<IEmailSender, SendMailService>();
 
         services.AddSingleton<ILogger>(_ =>
             new LoggerConfiguration()

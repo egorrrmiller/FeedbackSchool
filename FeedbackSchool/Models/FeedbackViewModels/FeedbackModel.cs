@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace FeedbackSchool.Models;
+namespace FeedbackSchool.Models.FeedbackViewModels;
 
 public class FeedbackModel
 {
@@ -31,5 +31,6 @@ public class FeedbackModel
 
     public string DateTime { get; set; }
 
+    [Key]
     public int Id { get; set; }
 }
