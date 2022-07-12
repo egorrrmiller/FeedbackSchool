@@ -1,13 +1,16 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FeedbackSchool.Areas.Identity.Data;
 using FeedbackSchool.Data;
-using FeedbackSchool.Models.FeedbackViewModels;
-using FeedbackSchool.Models.ManageViewModels;
+using FeedbackSchool.Models;
+using FeedbackSchool.ViewModels.ManageViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -35,9 +38,14 @@ public sealed class ManageController : Controller
 
     // GET
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View(_applicationContext.Manage.ToList());
+        var model = new ManageViewModel()
+        {
+            ClassModels = await _applicationContext.Class.ToListAsync(),
+            SchoolModels = await _applicationContext.School.ToListAsync()
+        };
+        return View(model);
     }
 
     [Authorize]
@@ -67,7 +75,7 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> AddSchool(string addSchool)
     {
-        _applicationContext.Manage.Add(new ManageModel
+        _applicationContext.School.Add(new SchoolModel()
         {
             School = addSchool
         });
@@ -83,7 +91,7 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> AddClass(string addClass)
     {
-        _applicationContext.Manage.Add(new ManageModel
+        _applicationContext.Class.Add(new ClassModel()
         {
             Class = addClass
         });
@@ -97,7 +105,15 @@ public sealed class ManageController : Controller
 
     public async Task<IActionResult> DeleteSchoolOrClass(string id)
     {
-        var school = _applicationContext.Manage.FirstOrDefault(f => f.Id == id)?.School;
+        var school = new List<SelectListItem>();
+        var classes = _applicationContext.Class.Select(classModel => new SelectListItem
+            {
+                Text = classModel.Class,
+            })
+            .ToList();
+
+
+        /*var school = _applicationContext.Manage.FirstOrDefault(f => f.Id == id)?.School;
         var classes = _applicationContext.Manage.FirstOrDefault(f => f.Id == id)?.Class;
 
         if (school != null)
@@ -115,7 +131,7 @@ public sealed class ManageController : Controller
         _applicationContext.Manage.Remove(new ManageModel
         {
             Id = id
-        });
+        });*/
 
         await _applicationContext.SaveChangesAsync();
 

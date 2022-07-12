@@ -1,4 +1,4 @@
-﻿@model List<FeedbackSchool.Models.FeedbackViewModels.FeedbackModel>
+﻿@model FeedbackSchool.ViewModels.IndexViewModels.FeedbackViewModel
 
 <link href="~/css/table.css" rel="stylesheet"/>
 <div class="panel-success">
@@ -24,7 +24,7 @@
             </thead>
             <tbody>
             @{
-                foreach (var item in Model)
+                foreach (var item in Model.Feedback)
                 {
                     <tr>
                         <td data-label="Школа"> @item.School</td>

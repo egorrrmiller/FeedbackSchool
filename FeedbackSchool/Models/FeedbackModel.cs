@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace FeedbackSchool.Models.FeedbackViewModels;
+namespace FeedbackSchool.Models;
 
 public class FeedbackModel
 {

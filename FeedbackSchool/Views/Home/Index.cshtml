@@ -1,17 +1,4 @@
-﻿@inject ApplicationContext _context
-@using FeedbackSchool.Data
-@model FeedbackSchool.Models.FeedbackViewModels.FeedbackModel
-
-@{
-    var school = new List<SelectListItem>();
-    var classes = new List<SelectListItem>();
-
-    foreach (var item in _context.Manage)
-        if (item.School != null)
-            school.Add(new SelectListItem {Text = item.School, Value = item.School});
-        else
-            classes.Add(new SelectListItem {Text = item.Class, Value = item.Class});
-}
+﻿@model FeedbackSchool.ViewModels.IndexViewModels.IndexViewModel
 
 <div class="panel-success">
     <div class="panel-heading text-center">
@@ -23,26 +10,26 @@
             @Html.ValidationSummary(false, "", new {@class = "text-danger"})
             <div class="form-group">
                 @* Представьтесь *@
-                @Html.LabelFor(model => model.Name)
-                @Html.TextBoxFor(model => model.Name, new {@class = "form-control", placeholder = "Фамилия и Имя "})
+                @Html.LabelFor(model => model.Feedback.Name)
+                @Html.TextBoxFor(model => model.Feedback.Name, new {@class = "form-control", placeholder = "Фамилия и Имя "})
             </div>
 
             <div class="form-group">
                 @* Выберите школу, в которой обучаетесь *@
-                @Html.LabelFor(model => model.School)
-                @Html.DropDownListFor(model => model.School, school, "Выберите школу", new {@class = "form-control"})
+                @Html.LabelFor(model => model.Feedback.School)
+                @Html.DropDownListFor(model => model.Feedback.School, Model?.SchoolListItems, "Выберите школу", new {@class = "form-control"})
             </div>
 
             <div class="form-group">
                 @* Выберите класс, в котором обучаетесь *@
-                @Html.LabelFor(model => model.Class)
-                @Html.DropDownListFor(model => model.Class, classes, "Выберите класс", new {@class = "form-control", placeholder = "Выберите свой класс"})
+                @Html.LabelFor(model => model.Feedback.Class)
+                @Html.DropDownListFor(model => model.Feedback.Class, Model?.ClassListItems, "Выберите класс", new {@class = "form-control", placeholder = "Выберите свой класс"})
             </div>
 
             <div class="form-group">
                 @* Отзыв о вашей школе *@
-                @Html.LabelFor(model => model.Feedback)
-                @Html.TextAreaFor(model => model.Feedback, new
+                @Html.LabelFor(model => model.Feedback.Feedback)
+                @Html.TextAreaFor(model => model.Feedback.Feedback, new
                 {
                     @class = "form-control",
                     placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"
@@ -51,8 +38,8 @@
 
             <div class="form-group">
                 @* Ваши любимые уроки *@
-                @Html.LabelFor(model => model.FavoriteLessons)
-                @Html.TextAreaFor(model => model.FavoriteLessons, new
+                @Html.LabelFor(model =>    model.Feedback.FavoriteLessons)
+                @Html.TextAreaFor(model => model.Feedback.FavoriteLessons, new
                 {
                     @class = "form-control",
                     placeholder = "Максимум 200 символов", maxlength = 200, style = "margin-top: 0px; margin-bottom: 0px; height: 100px;"

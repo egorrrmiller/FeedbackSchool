@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FeedbackSchool.Models.ManageViewModels.ManageModel>
+﻿@model FeedbackSchool.ViewModels.ManageViewModels.ManageViewModel
 
 <link rel="stylesheet" href="~/css/validate.css"/>
 
@@ -56,17 +56,14 @@
                             </thead>
                             <tbody>
 
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.SchoolModels.Where(item => item.School != null))
                             {
-                                if (item.School != null)
-                                {
-                                    <tr>
-                                        <td>@item.School</td>
-                                        <td>
-                                            <a asp-action="DeleteSchoolOrClass" asp-route-id="@item.Id">Удалить</a>
-                                        </td>
-                                    </tr>
-                                }
+                                <tr>
+                                    <td>@item.School</td>
+                                    <td>
+                                        <a asp-action="DeleteSchoolOrClass" asp-route-id="@item.Id">Удалить</a>
+                                    </td>
+                                </tr>
                             }
                             </tbody>
                         </table>
@@ -97,17 +94,14 @@
                             </thead>
                             <tbody>
 
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.ClassModels.Where(item => item.Class != null))
                             {
-                                if (item.Class != null)
-                                {
-                                    <tr>
-                                        <td>@item.Class</td>
-                                        <td>
-                                            <a asp-action="DeleteSchoolOrClass" asp-route-id="@item.Id">Удалить</a>
-                                        </td>
-                                    </tr>
-                                }
+                                <tr>
+                                    <td>@item.Class</td>
+                                    <td>
+                                        <a asp-action="DeleteSchoolOrClass" asp-route-id="@item.Id">Удалить</a>
+                                    </td>
+                                </tr>
                             }
                             </tbody>
                         </table>

@@ -2,12 +2,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace FeedbackSchool.Models.ManageViewModels;
+namespace FeedbackSchool.Models;
 
-public class ManageModel
+public class ClassModel
 {
-    [AllowNull]
-    public string School { get; set; }
 
     [AllowNull]
     public string Class { get; set; }
